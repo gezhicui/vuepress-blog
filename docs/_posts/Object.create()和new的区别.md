@@ -1,15 +1,15 @@
 ---
 title: Object.create()和new的区别
 date: 2022-03-10 10:11:18
-tags: 
+tags:
   - JavaScript
-categories: 
+categories:
   - JavaScript
 permalink: /pages/e904d9/
 sidebar: auto
-author: 
+author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 js 中创建对象的方式一般有两种：`Object.create`和`new`

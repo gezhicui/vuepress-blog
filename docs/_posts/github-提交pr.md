@@ -9,7 +9,7 @@ permalink: /pages/ddc0a3/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 在开始之前，确保你有基础的 git 知识

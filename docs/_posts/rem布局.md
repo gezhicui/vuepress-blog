@@ -9,7 +9,7 @@ permalink: /pages/fcb0e0/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 ## 常见移动 web 布局适配方法

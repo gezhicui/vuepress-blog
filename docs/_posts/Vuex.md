@@ -10,7 +10,7 @@ permalink: /pages/067c99/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 ## Vuex

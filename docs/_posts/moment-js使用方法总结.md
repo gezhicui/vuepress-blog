@@ -9,7 +9,7 @@ permalink: /pages/593dbb/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 &emsp;&emsp;`Moment.js`是一个轻量级的 JavaScript 时间库，它方便了日常开发中对时间的操作，提高了开发效率。日常开发中，通常会对时间进行下面这几个操作：比如获取时间，设置时间，格式化时间，比较时间等等。下面就是我对 moment.js 使用过程中的整理，方便以后查阅。

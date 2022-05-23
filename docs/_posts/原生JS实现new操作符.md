@@ -9,7 +9,7 @@ permalink: /pages/965179/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 new 本质上是一个语法糖，简化了我们实例化对象的步骤，今天突然比较好奇 new 的实现原理，现在我们来扒开糖衣看看 new 的本质

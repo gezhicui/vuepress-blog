@@ -11,7 +11,7 @@ permalink: /pages/f808a2/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 ## VueCLI

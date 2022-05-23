@@ -10,7 +10,7 @@ permalink: /pages/a8f052/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 前几天，我们使用了原生 JS 来实现了 websocket 聊天室，今天我们使用 vue 再实现一遍

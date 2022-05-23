@@ -10,7 +10,7 @@ permalink: /pages/7bec00/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 失误操作把错误的或者不完整的代码 commit 并且 push 到了远程。

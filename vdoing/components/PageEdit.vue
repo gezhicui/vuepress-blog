@@ -24,42 +24,43 @@
   </div>
 </template>
 <script>
-import isNil from 'lodash/isNil'
-import { endingSlashRE, outboundRE } from '../util'
+import isNil from 'lodash/isNil';
+import { endingSlashRE, outboundRE } from '../util';
 
 export default {
   name: 'PageEdit',
   computed: {
-    tags () {
-      return this.$frontmatter.tags
+    tags() {
+      return this.$frontmatter.tags;
     },
 
-    lastUpdated () {
-      return this.$page.lastUpdated
+    lastUpdated() {
+      return this.$page.lastUpdated;
     },
 
-    lastUpdatedText () {
+    lastUpdatedText() {
       if (typeof this.$themeLocaleConfig.lastUpdated === 'string') {
-        return this.$themeLocaleConfig.lastUpdated
+        return this.$themeLocaleConfig.lastUpdated;
       }
       if (typeof this.$site.themeConfig.lastUpdated === 'string') {
-        return this.$site.themeConfig.lastUpdated
+        return this.$site.themeConfig.lastUpdated;
       }
-      return 'Last Updated'
+      return 'Last Updated';
     },
 
-    editLink () {
+    editLink() {
       const showEditLink = isNil(this.$page.frontmatter.editLink)
         ? this.$site.themeConfig.editLinks
-        : this.$page.frontmatter.editLink
+        : this.$page.frontmatter.editLink;
 
       const {
         repo,
         docsDir = '',
-        editDir='',
+        editDir = '',
         docsBranch = 'master',
-        docsRepo = repo
-      } = this.$site.themeConfig
+        docsRepo = repo,
+      } = this.$site.themeConfig;
+      console.log(this.$site.themeConfig);
 
       if (showEditLink && docsRepo && this.$page.relativePath) {
         return this.createEditLink(
@@ -69,72 +70,81 @@ export default {
           editDir,
           docsBranch,
           this.$page.relativePath
-        )
+        );
       }
-      return null
+      return null;
     },
 
-    editLinkText () {
+    editLinkText() {
       return (
-        this.$themeLocaleConfig.editLinkText
-        || this.$site.themeConfig.editLinkText
-        || `Edit this page`
-      )
-    }
+        this.$themeLocaleConfig.editLinkText ||
+        this.$site.themeConfig.editLinkText ||
+        `Edit this page`
+      );
+    },
   },
 
   methods: {
-    createEditLink (repo, docsRepo, docsDir,editDir, docsBranch, path) {
-      const bitbucket = /bitbucket.org/
+    createEditLink(repo, docsRepo, docsDir, editDir, docsBranch, path) {
+      const bitbucket = /bitbucket.org/;
       if (bitbucket.test(docsRepo)) {
-        const base = docsRepo
+        const base = docsRepo;
         return (
-          base.replace(endingSlashRE, '')
-          + `/src`
-          + `/${docsBranch}/`
-          + (docsDir ? docsDir.replace(endingSlashRE, '') + '/' : '')
-          + path
-          + `?mode=edit&spa=0&at=${docsBranch}&fileviewer=file-view-default`
-        )
+          base.replace(endingSlashRE, '') +
+          `/src` +
+          `/${docsBranch}/` +
+          (docsDir ? docsDir.replace(endingSlashRE, '') + '/' : '') +
+          path +
+          `?mode=edit&spa=0&at=${docsBranch}&fileviewer=file-view-default`
+        );
       }
 
-      const gitlab = /gitlab.com/
+      const gitlab = /gitlab.com/;
       if (gitlab.test(docsRepo)) {
-        const base = docsRepo
+        const base = docsRepo;
         return (
-          base.replace(endingSlashRE, '')
-          + `/-/edit`
-          + `/${docsBranch}/`
-          + (docsDir ? docsDir.replace(endingSlashRE, '') + '/' : '')
-          + path
-        )
+          base.replace(endingSlashRE, '') +
+          `/-/edit` +
+          `/${docsBranch}/` +
+          (docsDir ? docsDir.replace(endingSlashRE, '') + '/' : '') +
+          path
+        );
       }
-         const gitee = /gitee.com/
+      const gitee = /gitee.com/;
       if (gitee.test(docsRepo)) {
-        const base = docsRepo
+        const base = docsRepo;
         return (
-          base.replace(endingSlashRE, '')
-          + `/${editDir}`
-          + `/edit`
-          + `/${docsBranch}/`
-          + (docsDir ? docsDir.replace(endingSlashRE, '') + '/' : '')
-          + path
-        )
+          base.replace(endingSlashRE, '') +
+          `/${editDir}` +
+          `/edit` +
+          `/${docsBranch}/` +
+          (docsDir ? docsDir.replace(endingSlashRE, '') + '/' : '') +
+          path
+        );
       }
 
       const base = outboundRE.test(docsRepo)
         ? docsRepo
-        : `https://github.com/${docsRepo}`
+        : `https://github.com/${docsRepo}`;
+      console.log(
+        base.replace(endingSlashRE, '') +
+          `/${editDir}` +
+          `/edit` +
+          `/${docsBranch}/` +
+          (docsDir ? docsDir.replace(endingSlashRE, '') + '/' : '') +
+          path
+      );
       return (
-        base.replace(endingSlashRE, '')
-        + `/edit`
-        + `/${docsBranch}/`
-        + (docsDir ? docsDir.replace(endingSlashRE, '') + '/' : '')
-        + path
-      )
-    }
-  }
-}
+        base.replace(endingSlashRE, '') +
+        `/${editDir}` +
+        `/edit` +
+        `/${docsBranch}/` +
+        (docsDir ? docsDir.replace(endingSlashRE, '') + '/' : '') +
+        path
+      );
+    },
+  },
+};
 </script>
 <style lang="stylus">
 @require '../styles/wrapper.styl'

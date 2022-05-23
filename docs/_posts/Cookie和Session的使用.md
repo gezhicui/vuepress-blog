@@ -9,7 +9,7 @@ permalink: /pages/025a60/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 ## cookie 和 session 概念

@@ -11,7 +11,7 @@ permalink: /pages/69ae2b/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 在开发中，往往一些数据确实需要从上层传递到下层 ∶

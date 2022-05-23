@@ -9,7 +9,7 @@ permalink: /pages/79dc41/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 当我们想在宝塔下添加了一个站点之后（默认端口为 80，如：139.224.211.111:3001），要再创建一个新站点时（如：139.224.211.111:3002）就会报错：

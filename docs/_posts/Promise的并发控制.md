@@ -9,7 +9,7 @@ categories:
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 permalink: /pages/4951e7/
 ---
 

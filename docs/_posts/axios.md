@@ -7,7 +7,7 @@ permalink: /pages/b460c6/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 axios(官网: https://github.com/axios/axios )是一个基于 Promise 用于浏览器和 node.js 的 HTTP 客户端。

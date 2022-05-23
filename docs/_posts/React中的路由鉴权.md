@@ -1,15 +1,15 @@
 ---
 title: React中的路由鉴权
 date: 2021-06-03 14:39:22
-tags: 
+tags:
   - React
-categories: 
+categories:
   - React
 permalink: /pages/f16c02/
 sidebar: auto
-author: 
+author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 前段时间在更新博客后台的功能，加入了 jwt 鉴权，也不免需要用到路由跳转鉴权，在 Vue 中我们可以很轻松的用路由导航守卫`beforeEach`来注册一个路由前置守卫，但是 react 好像没有提供这方面的 Api，那就自己来写吧。

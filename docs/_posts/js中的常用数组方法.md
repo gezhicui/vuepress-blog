@@ -9,7 +9,7 @@ permalink: /pages/854bd8/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 **JavaScript 中创建数组有两种方式**

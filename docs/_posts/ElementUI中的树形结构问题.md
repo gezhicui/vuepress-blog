@@ -11,7 +11,7 @@ permalink: /pages/3fcbb0/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 最近实习了，很久没写博客，今天来记录一下使用` ElementUI`的树行控件遇到的问题

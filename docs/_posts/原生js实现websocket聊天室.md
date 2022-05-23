@@ -9,7 +9,7 @@ permalink: /pages/754d95/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 ## 简介
@@ -299,4 +299,4 @@ const Ws = require('ws');
 
 源码地址：
 
-https://gitee.com/xiang0515/jswebsocket
+https://github.com/gezhicui/jswebsocket

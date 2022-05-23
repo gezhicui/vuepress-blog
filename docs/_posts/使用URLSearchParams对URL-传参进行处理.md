@@ -1,16 +1,16 @@
 ---
 title: 使用URLSearchParams对URL?传参进行处理
 date: 2021-04-30 17:36:23
-tags: 
+tags:
   - 前端
-categories: 
+categories:
   - 前端
   - JavaScript
 permalink: /pages/eb3f83/
 sidebar: auto
-author: 
+author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 在最近遇到的项目中，在传递一些有时候需要有时候不需要的参数时，我们就能用`?`来进行 URL 的传参，这样并不改变路由的跳转路径，比如说：

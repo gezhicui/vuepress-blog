@@ -6,9 +6,9 @@ categories: null
 copyright: null
 permalink: /pages/29b460/
 sidebar: auto
-author: 
+author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 什么是 Typescript 中的 new()?

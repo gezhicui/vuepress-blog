@@ -9,7 +9,7 @@ permalink: /pages/1ac16a/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 今天自己买了个服务器折腾，在服务器中创建完数据库后，本地使用`navicat`无法连接到数据库，在这记录一下解决方法

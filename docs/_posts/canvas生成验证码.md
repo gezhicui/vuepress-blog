@@ -1,16 +1,16 @@
 ---
 title: canvas生成验证码
 date: 2021-02-16 21:15:59
-tags: 
+tags:
   - canvas
-categories: 
+categories:
   - 前端
   - canvas
 permalink: /pages/b69126/
 sidebar: auto
-author: 
+author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 首先先生成 canvas 基本结构：

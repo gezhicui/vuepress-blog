@@ -10,7 +10,7 @@ permalink: /pages/36e995/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 ## 同步 api,异步 api

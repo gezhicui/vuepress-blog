@@ -10,7 +10,7 @@ tags:
   - 性能优化
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 在众多的 webpack 配置教程中，对 externals 这个配置选项，总是一带而过，把文档中提到的几种方式都复述一遍，但是对于开发者而言，根本没法完全理解。本文试图通过一整篇文章，详细的对 externals 这个参数进行讲解。

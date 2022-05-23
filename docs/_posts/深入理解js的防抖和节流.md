@@ -11,7 +11,7 @@ permalink: /pages/cf004c/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 &emsp; 防抖和节流严格算起来应该属于性能优化的知识，但实际上遇到的频率相当高，在进行窗口的 resize、scroll，输入框内容校验等操作时，如果事件处理函数调用的频率无限制，处理不当或者放任不管就容易会加重浏览器和服务器的负担，导致用户体验非常糟糕。此时我们可以采用 debounce（防抖）和 throttle（节流）的方式来减少调用频率，同时又不影响实际效果。

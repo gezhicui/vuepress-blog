@@ -12,7 +12,7 @@ permalink: /pages/db0739/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 在 ES6 之前，面向对象是通过构造函数来实现的。构造函数的方法很好用，但是存在一个**浪费内存**的问题。

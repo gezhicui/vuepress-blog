@@ -9,7 +9,7 @@ permalink: /pages/a36e52/
 sidebar: auto
 author:
   name: 杨雨翔
-  link: https://gitee.com/xiang0515
+  link: https://github.com/gezhicui
 ---
 
 首先，我们先来创建一个网站服务器
