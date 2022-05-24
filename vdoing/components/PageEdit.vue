@@ -60,7 +60,6 @@ export default {
         docsBranch = 'master',
         docsRepo = repo,
       } = this.$site.themeConfig;
-      console.log(this.$site.themeConfig);
 
       if (showEditLink && docsRepo && this.$page.relativePath) {
         return this.createEditLink(
@@ -126,14 +125,6 @@ export default {
       const base = outboundRE.test(docsRepo)
         ? docsRepo
         : `https://github.com/${docsRepo}`;
-      console.log(
-        base.replace(endingSlashRE, '') +
-          `/${editDir}` +
-          `/edit` +
-          `/${docsBranch}/` +
-          (docsDir ? docsDir.replace(endingSlashRE, '') + '/' : '') +
-          path
-      );
       return (
         base.replace(endingSlashRE, '') +
         `/${editDir}` +
