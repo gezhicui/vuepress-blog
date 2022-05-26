@@ -7,12 +7,12 @@
           :class="[
             'right-menu-item',
             'level' + item.level,
-            { active: item.slug === hashText }
+            { active: item.slug === hashText },
           ]"
           v-for="(item, i) in headers"
           :key="i"
         >
-          <a :href="'#' + item.slug">{{ item.title }}</a>
+          <a @click="clickanchor('#' + item.slug)">{{ item.title }}</a>
         </div>
       </div>
     </div>
@@ -24,31 +24,34 @@ export default {
   data() {
     return {
       headers: [],
-      hashText: ''
-    }
+      hashText: '',
+    };
   },
   mounted() {
-    this.getHeadersData()
-    this.getHashText()
+    this.getHeadersData();
+    this.getHashText();
   },
   watch: {
     $route() {
-      this.headers = this.$page.headers
-      this.getHashText()
-    }
+      this.headers = this.$page.headers;
+      this.getHashText();
+    },
   },
   methods: {
     getHeadersData() {
-      this.headers = this.$page.headers
+      this.headers = this.$page.headers;
     },
     getHashText() {
-      this.hashText = decodeURIComponent(window.location.hash.slice(1))
-    }
-  }
-}
+      this.hashText = decodeURIComponent(window.location.hash.slice(1));
+    },
+    clickanchor(idName) {
+      document.querySelector(idName).scrollIntoView({ behavior: 'smooth' });
+    },
+  },
+};
 </script>
 
-<style lang='stylus'>
+<style lang="stylus">
 .right-menu-wrapper
   width $rightMenuWidth
   float right
@@ -64,7 +67,7 @@ export default {
   .right-menu-title
     padding 10px 15px 0 15px
     background var(--mainBg)
-    font-size 1rem
+    font-size 1.2rem
     &:after
       content ''
       display block
@@ -96,7 +99,7 @@ export default {
       text-overflow ellipsis
       position relative
       &.level2
-        font-size 0.8rem
+        font-size 0.9rem
       &.level3
         padding-left 27px
       &.level4
@@ -119,6 +122,7 @@ export default {
           color $accentColor
           opacity 1
       a
+        cursor pointer
         color var(--textColor)
         opacity 0.75
         display inline-block

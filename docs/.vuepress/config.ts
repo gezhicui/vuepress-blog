@@ -96,7 +96,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
     blogger: {
       avatar: 'https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/avatar.png',
       name: '杨雨翔',
-      slogan: '前端界的小学生',
+      slogan: '永远相信美好的事情即将发生',
     },
 
     // 社交图标 (显示于博主信息栏和页脚栏。内置图标：https://doc.xugaoyi.com/pages/a20ce8/#social)

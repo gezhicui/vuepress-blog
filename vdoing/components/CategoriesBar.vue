@@ -32,30 +32,30 @@ export default {
   props: {
     category: {
       type: String,
-      default: ''
+      default: '',
     },
     categoriesData: {
       type: Array,
-      default: []
+      default: [],
     },
     length: {
       type: [String, Number],
-      default: 'all'
-    }
+      default: 'all',
+    },
   },
   computed: {
-    categories () {
+    categories() {
       if (this.length === 'all') {
-        return this.categoriesData
+        return this.categoriesData;
       } else {
-        return this.categoriesData.slice(0, this.length)
+        return this.categoriesData.slice(0, this.length);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
-<style lang='stylus'>
+<style lang="stylus">
 .categories-wrapper
   .title
     color var(--textColor)
@@ -94,7 +94,7 @@ export default {
         float right
         background-color var(--textColor)
         color var(--mainBg)
-        border-radius 8px
+        border-radius 5px
         padding 0 0.13rem
         min-width 1rem
         height 1rem
