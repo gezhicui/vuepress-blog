@@ -198,7 +198,13 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
         ],
       }
     ],
-
+    //站点地图
+    [
+      'sitemap',
+      {
+        hostname: 'https://www.yangyuxiang.top'
+      },
+    ],
     [
       'one-click-copy', // 代码块复制按钮
       {
