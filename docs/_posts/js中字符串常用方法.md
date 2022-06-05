@@ -14,7 +14,9 @@ author:
   link: https://github.com/gezhicui
 ---
 
-## 1、toLowerCase(): 把字符串转为小写，返回新的字符串。
+## 1、toLowerCase()
+
+把字符串转为小写，返回新的字符串。
 
 ```javascript
 var str = 'Hello World';
@@ -25,7 +27,9 @@ console.log(str1); //hello world
 
 ---
 
-## 2、toUpperCase(): 把字符串转为大写，返回新的字符串。
+## 2、toUpperCase()
+
+把字符串转为大写，返回新的字符串。
 
 ```javascript
 var str = 'hello world';
@@ -36,7 +40,9 @@ console.log(str1); //HELLO WORLD
 
 ---
 
-## 3、charAt(): 返回指定下标位置的字符。如果 index 不在 0-str.length(不包含 str.length)之间，返回空字符串。
+## 3、charAt()
+
+返回指定下标位置的字符。如果 index 不在 0-str.length(不包含 str.length)之间，返回空字符串。
 
 ```javascript
 var str = 'hello world';
@@ -46,7 +52,9 @@ console.log(str1); //6
 
 ---
 
-## 4、charCodeAt(): 返回指定下标位置的字符的 unicode 编码,这个返回值是 0 - 65535 之间的整数。
+## 4、charCodeAt()
+
+返回指定下标位置的字符的 unicode 编码,这个返回值是 0 - 65535 之间的整数。
 
 ```javascript
 var str = 'hello world';
@@ -57,7 +65,9 @@ console.log(str1); //101
 
 ---
 
-## 5、indexOf(): 返回某个指定的子字符串在字符串中第一次出现的位置
+## 5、indexOf()
+
+返回某个指定的子字符串在字符串中第一次出现的位置
 
 ```javascript
 var str = 'Hello World';
@@ -71,7 +81,9 @@ console.log(str3); //7
 
 ---
 
-## 6、lastIndexOf(): 返回某个指定的子字符串在字符串中最后出现的位置。
+## 6、lastIndexOf()
+
+返回某个指定的子字符串在字符串中最后出现的位置。
 
 ```javascript
 var str = 'Hello World';
@@ -86,7 +98,9 @@ console.log(str3); //4
 
 ---
 
-## 7、slice(): 返回字符串中提取的子字符串。
+## 7、slice()
+
+返回字符串中提取的子字符串。
 
 ```javascript
 var str = 'Hello World';
@@ -101,7 +115,9 @@ console.log(str3); //o Wor
 
 ---
 
-## 8、substring(): 提取字符串中介于两个指定下标之间的字符。
+## 8、substring()
+
+提取字符串中介于两个指定下标之间的字符。
 
 ```javascript
 var str = 'Hello World';
@@ -116,7 +132,9 @@ console.log(str3); //llo W
 
 ---
 
-## 9、substr(): 返回从指定下标开始指定长度的的子字符串
+## 9、substr()
+
+返回从指定下标开始指定长度的的子字符串
 
 ```javascript
 var str = 'Hello World';
@@ -131,7 +149,9 @@ console.log(str3); //rl
 
 ---
 
-## 10、split(): 把字符串分割成字符串数组。
+## 10、split()
+
+把字符串分割成字符串数组。
 
 ```javascript
 var str = 'AA BB CC DD';
@@ -148,7 +168,9 @@ console.log(str4); // ["1", "2", "3", "4", "5"]
 
 ---
 
-## 11、replace(): 在字符串中用一些字符替换另一些字符，或替换一个与正则表达式匹配的子串。
+## 11、replace()
+
+在字符串中用一些字符替换另一些字符，或替换一个与正则表达式匹配的子串。
 
 ```javascript
 var str = 'hello WORLD';
@@ -159,7 +181,9 @@ console.log(str1); //hell** W**RLD
 
 ---
 
-## 12、match(): 返回所有查找的关键字内容的数组。
+## 12、match()
+
+返回所有查找的关键字内容的数组。
 
 ```javascript
 var str = 'To be or not to be';
