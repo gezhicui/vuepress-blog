@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="sidebar-button"
-    @click="$emit('toggle-sidebar')"
-    title="目录"
-  >
+  <div class="sidebar-button" @click="$emit('toggle-sidebar')" title="目录">
     <svg
       class="icon"
       xmlns="http://www.w3.org/2000/svg"
@@ -59,6 +55,8 @@
       box-shadow 0 0 6px $accentColor
     .icon
       display inline
+      padding: 0
+      margin: 0
       width 1rem
       height 1rem
 </style>

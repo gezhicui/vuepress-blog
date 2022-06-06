@@ -24,17 +24,17 @@
 <script>
 export default {
   computed: {
-    blogger () {
-      return this.$themeConfig.blogger
+    blogger() {
+      return this.$themeConfig.blogger;
     },
-    social () {
-      return this.$themeConfig.social
-    }
-  }
-}
+    social() {
+      return this.$themeConfig.social;
+    },
+  },
+};
 </script>
 
-<style lang='stylus'>
+<style lang="stylus">
 .blogger-wrapper
   height auto
   display inline-table
@@ -68,6 +68,7 @@ export default {
   .blogger
     padding 0.3rem 0.95rem 0 0.95rem
     .name
+      text-align: center
       font-size 1.3rem
       display block
       margin-bottom 6px
