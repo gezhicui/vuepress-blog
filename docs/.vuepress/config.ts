@@ -35,7 +35,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
           { text: 'React', link: '/note/react/' },
           { text: 'Webpack', link: '/note/webpack/' },
           { text: 'Node', link: '/note/node/' },
-          { text: '算法与数据结构', link: '/note/dsa/' },
+          { text: '数据结构与算法', link: '/note/dsa/' },
         ],
       },
       { text: '分类', link: '/categories/' },
