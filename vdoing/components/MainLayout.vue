@@ -13,7 +13,10 @@
 .main-wrapper
   margin 1.5rem auto 0 auto
   max-width $homePageWidth
-  padding 0 0.9rem
+  box-shadow: $boxShadow
+  background: $HomePageBackground
+  padding 0.5rem 0.9rem
+  border-radius: 10px
   box-sizing border-box
   position relative
   display flex

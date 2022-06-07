@@ -236,7 +236,7 @@ export default {
       } else if (hours >= 0 && hours < 6) {
         div.style.backgroundColor = this.bgTimeColorArray[3];
         addTip(
-          `别再熬夜了~，现在是 ${hours}:${minutes}:${seconds}，早点睡吧，明天要元气满满！😇🛏`,
+          `别再熬夜了~，现在是 ${hours}:${minutes}:${seconds}，早点睡吧，明天也要元气满满！😇🛏`,
           'info',
           50,
           4000
