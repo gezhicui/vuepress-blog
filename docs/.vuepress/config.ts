@@ -61,7 +61,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
 
     // categoryText: '随笔', // 碎片化文章（_posts文件夹的文章）预设生成的分类值，默认'随笔'
-    bodyBgImg: 'https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/yuhangyuan.jpg',
+    bodyBgImg: '/img/yuhangyuan.jpg',
     // bodyBgImg: [
     //   'https://cdn.jsdelivr.net/gh/xugaoyi/image_store/blog/20200507175828.jpeg',
     //   'https://cdn.jsdelivr.net/gh/xugaoyi/image_store/blog/20200507175845.jpeg',
