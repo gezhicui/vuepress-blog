@@ -2,9 +2,9 @@
 title: rem布局
 date: 2020-10-04 10:56:20
 tags:
-  - 前端
+  - css
 categories:
-  - 前端
+  - css
 permalink: /pages/fcb0e0/
 sidebar: auto
 author:

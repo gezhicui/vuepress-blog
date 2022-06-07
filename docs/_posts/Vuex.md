@@ -2,10 +2,10 @@
 title: Vuex
 date: 2020-08-15 15:05:46
 tags:
-  - Vux
-categories:
   - Vuex
-copyright: true
+categories:
+  - 框架
+
 permalink: /pages/067c99/
 sidebar: auto
 author:

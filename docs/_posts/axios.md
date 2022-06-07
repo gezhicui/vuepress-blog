@@ -1,8 +1,10 @@
 ---
 title: axios
 date: 2020-08-11 16:53:41
-tags: 前端
-categories: 前端
+tags:
+  - JavaScript
+categories:
+  - JavaScript
 permalink: /pages/b460c6/
 sidebar: auto
 author:

@@ -1,9 +1,10 @@
 ---
 title: TypeScript中的new()
 date: 2021-03-12 21:48:43
-tags: null
-categories: null
-copyright: null
+tags:
+  - TypeScript
+categories:
+  - JavaScript
 permalink: /pages/29b460/
 sidebar: auto
 author:

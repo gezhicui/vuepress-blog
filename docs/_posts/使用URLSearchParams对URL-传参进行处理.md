@@ -2,9 +2,8 @@
 title: 使用URLSearchParams对URL?传参进行处理
 date: 2021-04-30 17:36:23
 tags:
-  - 前端
+  - JavaScript
 categories:
-  - 前端
   - JavaScript
 permalink: /pages/eb3f83/
 sidebar: auto

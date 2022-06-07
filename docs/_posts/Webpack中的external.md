@@ -7,7 +7,6 @@ categories:
   - Webpack
 tags:
   - Webpack
-  - 性能优化
 author:
   name: 杨雨翔
   link: https://github.com/gezhicui

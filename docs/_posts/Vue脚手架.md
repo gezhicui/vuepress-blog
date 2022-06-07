@@ -4,9 +4,8 @@ date: 2020-06-12 21:35:57
 tags:
   - Vue
 categories:
-  - 前端
-  - Vue
-copyright: true
+  - 框架
+
 permalink: /pages/f808a2/
 sidebar: auto
 author:

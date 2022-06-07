@@ -5,7 +5,6 @@ tags:
   - JavaScript
   - 字符串
 categories:
-  - 前端
   - JavaScript
 permalink: /pages/0520fe/
 sidebar: auto

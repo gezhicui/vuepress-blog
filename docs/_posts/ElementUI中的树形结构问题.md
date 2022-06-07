@@ -5,8 +5,8 @@ tags:
   - Vue
   - ElementUI
 categories:
-  - 前端
-copyright: true
+  - 框架
+
 permalink: /pages/3fcbb0/
 sidebar: auto
 author:

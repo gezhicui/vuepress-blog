@@ -3,10 +3,9 @@ title: DvaJS入门
 date: 2021-02-24 19:38:29
 tags:
   - React
-  - 前端
+  - dva
 categories:
-  - React
-  - 前端
+  - 框架
 permalink: /pages/e6d6cc/
 sidebar: auto
 author:

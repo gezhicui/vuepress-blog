@@ -2,11 +2,9 @@
 title: js中的原型和原型链
 date: 2020-06-16 17:05:57
 tags:
-  - 前端
   - 原型
   - JavaScript
 categories:
-  - 前端
   - JavaScript
 permalink: /pages/db0739/
 sidebar: auto

@@ -4,9 +4,8 @@ date: 2020-08-12 17:09:54
 tags:
   - Vue
 categories:
-  - 前端
-  - Vue
-copyright: true
+  - 框架
+
 permalink: /pages/dbd7cb/
 sidebar: auto
 author:

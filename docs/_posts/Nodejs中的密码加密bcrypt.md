@@ -5,7 +5,7 @@ tags:
   - Node.js
   - 密码加密
 categories:
-  - Node.js
+  - NodeJs
 permalink: /pages/b38d22/
 sidebar: auto
 author:

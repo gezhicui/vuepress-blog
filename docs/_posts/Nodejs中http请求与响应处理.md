@@ -4,7 +4,7 @@ date: 2020-06-30 15:47:38
 tags:
   - Node.js
 categories:
-  - Node.js
+  - NodeJs
 permalink: /pages/a36e52/
 sidebar: auto
 author:

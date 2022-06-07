@@ -4,8 +4,7 @@ date: 2021-02-16 21:15:59
 tags:
   - canvas
 categories:
-  - 前端
-  - canvas
+  - JavaScript
 permalink: /pages/b69126/
 sidebar: auto
 author:

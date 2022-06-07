@@ -5,8 +5,8 @@ tags:
   - 计算机网络
   - TCP
 categories:
-  - 计算机网络
-copyright: true
+  - 浏览器
+
 permalink: /pages/a2ddc3/
 sidebar: auto
 author:

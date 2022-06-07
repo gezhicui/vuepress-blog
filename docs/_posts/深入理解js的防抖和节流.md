@@ -2,10 +2,8 @@
 title: 深入理解js的防抖和节流
 date: 2020-06-14 10:32:45
 tags:
-  - 前端
   - JavaScript
 categories:
-  - 前端
   - JavaScript
 permalink: /pages/cf004c/
 sidebar: auto

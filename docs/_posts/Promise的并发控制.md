@@ -5,7 +5,7 @@ tags:
   - Promise
   - 异步编程
 categories:
-  - 异步编程
+  - JavaScript
 sidebar: auto
 author:
   name: 杨雨翔

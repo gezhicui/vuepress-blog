@@ -5,7 +5,6 @@ tags:
   - git
 categories:
   - git
-copyright: null
 permalink: /pages/7bec00/
 sidebar: auto
 author:

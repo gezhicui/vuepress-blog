@@ -4,7 +4,7 @@ date: 2021-03-17 21:56:28
 tags:
   - websocket
 categories:
-  - websocket
+  - JavaScript
 permalink: /pages/754d95/
 sidebar: auto
 author:
