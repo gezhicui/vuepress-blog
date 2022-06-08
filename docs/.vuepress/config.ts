@@ -213,10 +213,10 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
             title: '在Vue API中搜索',
             frontUrl: 'https://cn.vuejs.org/v2/api/#',
           },
-          // {
-          //   title: '通过百度搜索本站的',
-          //   frontUrl: 'https://www.baidu.com/s?wd=site%3Axugaoyi.com%20',
-          // },
+          {
+            title: '通过百度搜索本站的',
+            frontUrl: 'https://www.baidu.com/s?wd=site%3Ayangyuxiang.top%20',
+          },
         ],
       }
     ],
