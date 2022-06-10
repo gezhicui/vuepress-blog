@@ -15,7 +15,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
   locales: {
     '/': {
       lang: 'zh-CN',
-      title: "Yang's blog",
+      title: "杨雨翔的博客小站",
       description: '杨雨翔的个人博客，专注于前端技术的总结和生活的分享',
     }
   },
