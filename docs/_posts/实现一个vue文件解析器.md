@@ -27,7 +27,7 @@ author:
 
 ## webpack 部分
 
-首先进行 webpack 打包,把`.vue` 文件通过 `vue-loader` 处理。
+首先前端的文件都会经过 `webpack` 打包,在`webpack`中把`.vue` 文件通过 `vue-loader` 处理。
 
 实现一个简易的`vue-loader`,通过一系列正则，最终一个`.vue `文件的内容会被包装到一个对象中
 
@@ -60,7 +60,7 @@ export default {
 
 那么经过 `vue-loader` 处理，就会变成一个对象：
 
-```
+```js
 {
   template:
    `<div>
@@ -77,7 +77,7 @@ export default {
 }
 ```
 
-那么，在浏览器执行这个文件的时候，我们就能通过`createApp`方法，把这个对象使用 `createApp` 进行处理，挂载到页面上
+那么，引入这个组件的时候，我们就能通过`createApp`方法，把这个对象使用 `createApp` 进行处理，挂载到页面上
 
 ## createApp 实现部分
 
@@ -90,7 +90,7 @@ import { createApp } from '../modules/vue';
 createApp(App).mount('#app');
 ```
 
-那我们实现的重点就在于`createApp`对**vue 组件**的处理，以及在`createApp`的返回内容(就是 vm)中添加`mount`方法，实现处理完的节点的挂载
+那我们实现的重点就在于`createApp`对**vue 组件对象**的处理，以及在`createApp`的返回内容(就是 vm)中添加`mount`方法，实现处理完的节点的挂载
 
 接下来就一步步实现`createApp`，首先，我们先来定义一个 vm，一会儿所有的属性都可以放在 vm 上,同时把`vue-loader`解析过的文件对象中的内容给解构出来
 
@@ -151,7 +151,7 @@ for (let key in vm.$data) {
 
 ### 初始化数据池
 
-在上面的 **template 解析**中，我们已经拿到了`template`转换过后的节点，但是有个问题，节点的内容没有经过任何处理，如`{{count + 1}}`会原封不动的展示在浏览器中，我们希望的是最终展示的是 count 这个变量+1 的结果，所以我们需要对双括号语法进行解析
+在上面的 **template 解析**中，我们已经拿到了`template`转换过后的节点，但是有个问题，节点的内容没有经过任何处理，如`{{count + 1}}`会原封不动的展示在浏览器中，我们希望的是最终展示的是 count 这个变量 +1 的结果，所以我们需要对双括号语法进行解析
 
 我们先定义一个正则表达式，匹配`{{}}`中的内容，以及定义一个节点数据池
 
