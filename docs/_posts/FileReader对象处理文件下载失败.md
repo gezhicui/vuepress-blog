@@ -1,16 +1,16 @@
 ---
 title: FileReader对象处理文件下载失败
 date: 2022-06-23 21:04:22
-tags:
+tags: 
   - JavaScript
   - FileReader
-categories:
+categories: 
   - JavaScript
-permalink: /pages/1ac16a/
 sidebar: auto
-author:
+author: 
   name: 杨雨翔
   link: https://github.com/gezhicui
+permalink: /pages/230f55/
 ---
 
 在需求开发中，经常遇到文件导出或者文件下载的需求，但是这会涉及到一个问题：后端处理失败，返回的也是二进制流的错误信息，那前端怎么进行失败提示？
