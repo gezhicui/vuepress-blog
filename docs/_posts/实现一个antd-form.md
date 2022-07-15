@@ -375,3 +375,88 @@ class FormStore {
 ```
 
 到此为止，`Form`、`Field`、`useForm`的核心就完成了，表单可以正常使用，补上一个表单提交的逻辑就行了
+
+# 表单提交
+
+`form`实例提供了一个`submit`方法，调用`form.submit()`就能够实现对表单的提交,`submit`方法中调用了组件自身上的表单校验方法
+
+```js
+class FormStore {
+
++ validateFields = () => {
+    const promiseList: Promise<{
+      name: string;
+      errors: string[];
+    }>[] = [];
+    // 获取到所有在field初始化时保存进来的组件
+    this.getFieldEntities(true).forEach(entity => {
+      const promise = entity.validateRules();
+      const { name } = entity.props;
+      promiseList.push(
+        promise
+          .then(() => ({ name, errors: [] }))
+          .catch((errors: any) =>
+            Promise.reject({
+              name,
+              errors,
+            }),
+          ),
+      );
+    });
+
+    let hasError = false;
+    let count = promiseList.length;
+    const results: FieldError[] = [];
+
+    const summaryPromise = new Promise((resolve, reject) => {
+      promiseList.forEach((promise, index) => {
+        promise
+          .catch(e => {
+            hasError = true;
+            return e;
+          })
+          .then(result => {
+            count -= 1;
+            results[index] = result;
+            if (count > 0) {
+              return;
+            }
+            if (hasError) {
+              reject(results);
+            }
+            resolve(this.getFieldsValue());
+          });
+      });
+    });
+
+    return summaryPromise as Promise<Store>;
+  };
+
++ submit = async () => {
+    this.validateFields()
+      .then(values => {
+        const { onFinish } = this.callbacks;
+        if (onFinish) {
+          try {
+            onFinish(values);
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      })
+      .catch(e => {
+        const { onFinishFailed } = this.callbacks;
+        if (onFinishFailed) {
+          onFinishFailed(e);
+        }
+      });
+  };
+  getForm = () => {
+    return {
++    submit,
+    };
+  };
+}
+```
+
+这样 一个简单可用的`Form`组件就封装完了，建议配合源码食用
