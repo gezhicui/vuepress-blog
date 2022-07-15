@@ -183,3 +183,195 @@ return (
 # Field
 
 `Field`是`Form`的子组件，在`antd`中是`Form.Item`,它的基本使用如下：
+
+```js
+<Form form={form}>
+  <Field
+    name="nickname"
+    rules={[
+      {
+        required: true,
+        message: '昵称必填',
+      },
+    ]}
+  >
+    <Input placeholder="请输入昵称" />
+  </Field>
+</Form>
+```
+
+基本使用一看就会，和 antd 的 form.item 一模一样，直接来看`Field`的实现
+
+组件加载的时候，做了以下三件事：
+
+- 组件获取了`context`的内容（即 form 实例），同时从 form 实例上拿到了`registerField`方法，在`componentDidMount`执行了该方法,并把当前组件传给`registerField`当做实参，返回的是组件卸载的处理方法，在组件卸载时调用该方法来删除`form`实例中该控件绑定的状态
+- 定义了一个`onStoreChange`方法，可以在控件值发生改变的时候使用，来刷新数据
+- 定义了一个`validateRules`方法，用来做该控件的字段校验
+
+```js
+componentDidMount() {
+  const { registerField } = this.context;
+  this.cancelRegister = registerField(this);
+}
+
+componentWillUnmount() {
+  this.cancelRegister && this.cancelRegister();
+}
+
+onStoreChange = () => {
+  //值改变调用react的forceUpdate重新render，因为数据不是响应式的
+  this.forceUpdate();
+};
+
+/*
+  该方法提供给FormStore消费，当前组件先被存入fieldEntities这个保存所有Field的数组中，
+  等表单校验时，循环数组拿出组件，执行组件的validateRules进行校验
+*/
+validateRules = () => {
+    const { rules, name } = this.props;
+    if (!name || !rules || !rules.length) return [];
+    const cloneRule = [...rules];
+    const { getFieldValue } = this.context;
+    const value = getFieldValue(name);
+
+    // validateRules是表单的校验方法，具体看源码
+    const promise = validateRules(name, value, cloneRule);
+
+    promise
+      .catch(e => e)
+      .then(() => {
+        if (this.validatePromise === promise) {
+          this.validatePromise = null;
+          this.onStoreChange();
+        }
+      });
+
+    return promise;
+  };
+```
+
+`registerField`方法主要是初始化处理当前`Field`组件的内容，并把当前组件存进`fieldEntities`数组中，方法的实现如下：
+
+```js
+class FormStore {
++  private fieldEntities = [];
+
++  registerField = (entity) => {
+     // 用fieldEntities保存页面上的所有Field组件
+     this.fieldEntities.push(entity);
+     const { name, initialValue } = entity.props;
+     // 初始化Field传入的initialValue
+     if (initialValue !== undefined && name) {
+       this.initialValues = {
+         ...this.initialValues,
+         [name]: initialValue,
+       };
+       // store中添加控件的初始化值
+       this.setFieldsValue({
+         ...this.store,
+         [name]: initialValue,
+       });
+     }
+     // 返回一个函数，当组件卸载时调用该函数，移除改组件的所有状态
+     return () => {
+       this.fieldEntities = this.fieldEntities.filter(item => item !== entity);
+       // this.store = setValue(this.store, namePath, undefined); // 删除移除字段的值
+     };
+   };
+
+  getForm = () => {
+    return {
++     registerField,
+    };
+  };
+}
+```
+
+Field 返回的 jsx 是这样的：
+
+```js
+render() {
+  const { children } = this.props;
+  // 为form.item附加上form中的属性
+  const returnChildNode = React.cloneElement(
+    children,
+    this.getControled(),
+  );
+  return returnChildNode;
+}
+```
+
+可以看到，`Field`主要干的事情就是把他的子组件，即真正的输入控件使用`React.cloneElement()`拿来拓展
+
+`React.cloneElement`接收三个参数
+
+- type (ReactElement)
+- props (object)
+- children (ReactElement)
+
+他的作用是克隆并返回一个新的 `ReactElement` （内部子元素也会跟着克隆），新返回的元素会保留有旧元素的 props、ref、key，也会集成新的 props（只要在第二个参数中有定义），第三个参数为添加的新的子元素
+
+从上面的代码里可以看到，子组件扩展了`getControled`方法里返回的东西，`getControled`方法的实现如下：
+
+```js
+getControled = () => {
+  // 指定this.context 等于FieldContext.Provider传递过来的form实例对象
+  const contextType = FieldContext;
+
+  // 拿到 Field的name，就是表单的label
+  const { name } = this.props;
+  // this.context
+  const { getFieldValue, setFieldsValue } = this.context;
+  return {
+    value: getFieldValue(name),
+    onChange: (...args) => {
+      const event = args[0];
+      if (event && event.target && name) {
+        setFieldsValue({
+          [name]: event.target.value,
+        });
+      }
+    },
+  };
+};
+```
+
+从代码可以看出，`Field`为空间扩展了`value`和`onChange`，其中，`value`是通过`getFieldValue`拿到`form`实例对应的值来进行绑定，`onChange`触发了`setFieldsValue`方法来对表单数据进行修改。这两个方法也要在 `FormStore`对象中定义一下
+
+```js
+class FormStore {
+
++  private initialValues = {};
+
++  getFieldValue = (name) => this.store[name];
+
++  setFieldsValue = (values, reset) => {
+     const nextStore = {
+       ...this.store,
+       ...values,
+     };
+     this.store = nextStore;
+     this.fieldEntities.forEach(({ props, onStoreChange }) => {
+       const name = props.name;
+       Object.keys(values).forEach(key => {
+         if (name === key || reset) {
+           onStoreChange();
+         }
+       });
+     });
+     const { onValuesChange } = this.callbacks;
+     if (onValuesChange) {
+       onValuesChange(values, nextStore);
+     }
+   };
+
+  getForm = () => {
+    return {
++     getFieldValue,
++     setFieldsValue
+    };
+  };
+}
+```
+
+到此为止，`Form`、`Field`、`useForm`的核心就完成了，表单可以正常使用，补上一个表单提交的逻辑就行了
