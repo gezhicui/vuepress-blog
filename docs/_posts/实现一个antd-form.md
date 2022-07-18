@@ -378,7 +378,7 @@ class FormStore {
 
 # 表单提交
 
-`form`实例提供了一个`submit`方法，调用`form.submit()`就能够实现对表单的提交,`submit`方法中调用了组件自身上的表单校验方法
+`form`实例提供了一个`submit`方法，调用`form.submit()`就能够实现对表单的提交,`submit`方法中从`fieldEntities`中拿到了所有表单控件，调用了表单控件组件自身上的校验方法
 
 ```js
 class FormStore {
