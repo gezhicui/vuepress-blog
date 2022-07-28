@@ -2,13 +2,14 @@
 title: 使用webpack构建并发布npm包
 date: 2022-07-27 16:08:16
 sidebar: auto
-categories:
+categories: 
   - Webpack
-tags:
+tags: 
   - Webpack
-author:
+author: 
   name: 杨雨翔
   link: https://github.com/gezhicui
+permalink: /pages/3082d3/
 ---
 
 由于业务中经常使用到省市列表的树结构，经常对树结构进行各种各样的转换，所以想封装一个工具包，一劳永逸。在制作真正的包前肯定要先写个玩具包测试可行性，同时测试使用`umd`的模式来打包，兼容`amd、cjs、esm`规范的情况。所以就有了`test-npm-publish-yyx`这个测试包，顺便记录一下 `npm` 工具包的整个开发流程
