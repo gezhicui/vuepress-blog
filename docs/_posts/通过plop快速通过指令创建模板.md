@@ -1,14 +1,15 @@
 ---
 title: 通过plop快速通过指令创建模板
 date: 2022-08-03 09:43:43
-tags:
+tags: 
   - 框架
-categories:
+categories: 
   - 框架
 sidebar: auto
-author:
+author: 
   name: 杨雨翔
   link: https://github.com/gezhicui
+permalink: /pages/e983c9/
 ---
 
 在公司的项目中，很多需求是报表开发，但是报表页面间的相似度很高，同事就说能不能提高下开发效率，想个办法**解决重复的工作**，然后我就去找了下解决方案，找到了通过指令创建模板的神器--`plop`，在尝试之后发现可行，于是总结下使用方法
