@@ -13,19 +13,20 @@ permalink: /pages/2e6d49/
 ---
 
 公司的技术栈是 `react`，但是其实使用了这么久的 `react`，对于 `react` 的实现原理还是两眼一抹黑，于是一个月来都在通过各种文章视频来了 `react` 的底层实现，整理总结出 **`react fiber`** 架构的具体实现,要讲清 `react fiber` 的架构还是挺不容易的，个人认为 `react fiber` 架构比较复杂，所以本篇文章应该要持续更新一段时间
-[源码地址](www.baidu.com)
+
+源码地址：[https://github.com/gezhicui/mini-react16](https://github.com/gezhicui/mini-react16)
 
 <!-- more -->
 
 ## createElement
 
-在执行 react 的整个流程前,首先要解析一下`jsx`,在 react 项目的开发中，我没问你通常要引入 react：
+在执行 react 的整个流程前,首先要解析一下`jsx`,在 react 项目的开发中，通常要引入 react：
 
 ```js
 import React from 'React';
 ```
 
-但是，我们并没有用到`React`上的什么方法，但是为啥要引入呢??原因就是因为`jsx`在`babel`编译过后会变成`React.createElement`，引入`React`，主要是预防找不到`React`而产生报错。所以，要从先实现`createElement`开始
+但是，我们并没有用到`React`上的什么方法，但是为啥要引入呢??原因就是因为`jsx`在`babel`编译过后会变成`React.createElement`，引入`React`，主要是预防找不到`React`而产生报错。所以，实现`React`要从先实现`createElement`开始
 
 我们来看一下这样一段代码：
 
@@ -153,3 +154,41 @@ console.log(element1);
 ![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20220825163253.png)
 
 这样，完整的节点`jsx`对象结构就生成出来了，**这就是`react`的`virtual-dom`**
+
+## ReactDOM.render
+
+有了虚拟 dom，就可以使用`ReactDOM.render`方法把虚拟 dom 挂载到页面上了，该方法创建了一个根节点(`rootFiber`)，把刚刚解析过的虚拟 dom 挂载在该节点下
+
+```js
+// 新建react-dom.js
+
+/**
+ * render是要把一个元素渲染到一个容器内部
+ * @param {*} element 元素
+ * @param {*} container 容器
+ */
+function render(element, container) {
+  let rootFiber = {
+    tag: TAG_ROOT, //每个virtual-dom会有一个tag标示此元素类型
+    stateNode: container,
+    props: { children: [element] },
+  };
+  scheduleRoot(rootFiber);
+}
+
+const ReactDOM = {
+  render,
+};
+export default ReactDOM;
+
+//index.js中
+import ReactDOM from './react-dom';
+
+ReactDOM.render(element1, document.querySelector('#root'));
+```
+
+可以看到，`ReactDOM.render`中构建了一个 root 节点，把刚刚的虚拟 dom 挂在这个 root 节点下，然后调用`scheduleRoot`进行调度，`fiber`就是在`scheduleRoot`调度的过程中产生的
+
+既然本文是讨论`fiber`,那什么是`fiber`??
+
+## fiber
