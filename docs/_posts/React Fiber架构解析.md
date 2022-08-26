@@ -187,8 +187,60 @@ import ReactDOM from './react-dom';
 ReactDOM.render(element1, document.querySelector('#root'));
 ```
 
-可以看到，`ReactDOM.render`中构建了一个 root 节点，把刚刚的虚拟 dom 挂在这个 root 节点下，然后调用`scheduleRoot`进行调度，`fiber`就是在`scheduleRoot`调度的过程中产生的
+可以看到，`ReactDOM.render`中构建了一个 root 节点，把刚刚的 `virtual-dom` 挂在这个 root 节点下，然后调用`scheduleRoot`进行调度，fiber 就是在`scheduleRoot`调度的过程中产生的
 
-既然本文是讨论`fiber`,那什么是`fiber`??
+既然本文是讨论 fiber,那什么是 fiber??
 
-## fiber
+## Fiber
+
+在了解什么是 fiber 之前，我们应该要了解一下为什么会出现 fiber
+
+### React 15 架构
+
+每当有更新发生时，`Reconciler(协调器)`会做如下工作：
+
+- 调用函数组件、或 class 组件的 render 方法，将返回的**JSX 转化为虚拟 DOM**
+- 将虚拟 DOM 和上次更新时的虚拟 DOM **对比**
+- 通过对比**找出本次更新中变化的虚拟 DOM**
+- 通知 `Renderer` 将变化的虚拟 DOM 渲染到页面上
+
+对于 React 的更新来说，递归遍历应用的所有节点由于递归执行，计算出差异，然后再更新 UI。**递归是不能被打断的**，所以更新一旦开始，中途就无法中断。当层级很深时，递归更新时间超过了 16ms(小于 60 帧)，用户交互就会卡顿。
+
+### React 16 的设计思想
+
+React 16 实现的思路是这样的：**将运算切割为多个步骤，分批完成**。在完成一部分任务之后，将控制权交回给浏览器，让浏览器有时间进行页面的渲染。等浏览器忙完之后，再继续之前未完成的任务。这就是 React 16 中的 Fiber 设计思想。
+
+为了达到能中断处理这种效果，就需要有一个调度器 `(Scheduler)` 来进行任务分配，`Fiber Reconciler` 在执行过程中，会分为 2 个阶段:
+
+- 1、阶段一，**生成 Fiber** 树，得出需要更新的节点信息。这一步是一个渐进的过程，**可以被打断**。
+- 2、阶段二，将需要更新的节点**一次性批量更新**，这个过程**不能被打断**。
+
+阶段一可被打断的特性，让优先级更高的任务先执行，从框架层面大大降低了页面掉帧的概率。
+
+### Fiber 的实现细节
+
+`Fiber Reconciler` 在阶段一进行 Diff 计算的时候，会生成一棵 Fiber 树。这棵树是在 Virtual DOM 树的基础上增加额外的信息来生成的，它本质来说是一个链表。
+
+每个 Fiber 节点有个对应的 React element，多个 Fiber 节点是如何连接形成树呢？靠如下三个属性
+
+```js
+// 指向父级Fiber节点
+this.return = null;
+// 指向子Fiber节点
+this.child = null;
+// 指向右边第一个兄弟Fiber节点
+this.sibling = null;
+```
+
+举个例子，如下的组件结构：
+
+```js
+function App() {
+  return (
+    <div>
+      i am
+      <span>KaSong</span>
+    </div>
+  );
+}
+```
