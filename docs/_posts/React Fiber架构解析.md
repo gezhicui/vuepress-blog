@@ -244,3 +244,27 @@ function App() {
   );
 }
 ```
+
+对应的`Fiber`结构为：
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20220829173317.png)
+
+用数据结构来描述则为
+
+```js
+const newFiber = {
+  tag:null, //组件类型 CLASS、FUNCTION_COMPONENT、TEXT、HOST等
+  type:null  //createElement时接收的节点类型type,如果是原生的节点类型，那么就是一个字符串(div、span等),如果是一个组件(我们自己定义的、或者React内置提供的)那么就是一个变量
+  props: null, //虚拟dom属性，如style
+  stateNode: null, //如果是原生的节点类型，是虚拟dom对应的真实节点，如果是class/func组件，则是组件实例
+  updateQueue: null, // 数据更新队列
+  return: null, //父fiber
+  alternate: null, //捞fiber，用于新旧fiber对比更新
+  effectTag: null, //副作用标示，render会收集副作用 增加 删除 更新
+  nextEffect: null, //fiber节点组合成effectlist链表，指向链表当前节点的下一个节点
+};
+```
+
+### 如何实现浏览器控制权切换？
+
+react 16 中，
