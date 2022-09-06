@@ -267,4 +267,43 @@ const newFiber = {
 
 ### 如何实现浏览器控制权切换？
 
-react 16 中，
+react 16 的可中断调度，其实就是基于浏览器的 `requestIdleCallback`这个 api，在**每个帧的空闲时间**来处理`fiber`,
+
+每个帧的开头包括样式计算、布局和绘制，JavaScript 执行, Javascript 引擎和页面渲染引擎在同一个渲染线程,**GUI 渲染和 Javascript 执行两者是互斥的**，如果某个任务执行时间过长，浏览器会推迟渲染。
+
+假如某一帧里面要执行的任务不多，在不到 16ms（1000ms/60fps)的时间内就完成了上述任务的话，那么这一帧就会有一定的空闲时间，这段时间就恰好可以用来执行`requestIdleCallback`的回调
+
+由于`requestIdleCallback`利用的是帧的空闲时间，所以就有可能出现浏览器一直处于繁忙状态，导致回调一直无法执行，这其实也并不是我们期望的结果，那么这种情况我们就需要在调用`requestIdleCallback`的时候传入第二个配置参数`timeout了`
+
+```js
+// timeout指定多少毫秒之后若浏览器还是没空，则不等了，强制执行
+requestIdleCallback(workFunction, { timeout: 2000 });
+```
+
+知道了`requestIdleCallback`的用法，就可以来看一段示例：
+
+```js
+/**
+ * 函数fn接受deadline对象作为参数，deadline对象有两个属性：timeRemaining和didTimeout。
+ * timeRemaining() 返回当前帧还剩余的毫秒数。
+ * didTimeout 指定的时间是否过期。
+ */
+function workFunction(deadline) {
+  while (
+    (deadline.timeRemaining() > 0 || deadline.didTimeout) &&
+    taskList.length > 0
+  ) {
+    //如果当前帧还有剩余时间，或超时了但是任务还没执行完，就执行任务
+    doWork();
+  }
+  // 如果当前帧没有剩余时间了，就把控制权还给浏览器,在下个帧继续执行任务
+  if (taskList.length > 0) {
+    requestIdleCallback(workFunction);
+  }
+}
+
+// 执行requestIdleCallback，workFunction是要执行的函数
+requestIdleCallback(workFunction, 2000);
+```
+
+我们可以看到，`taskList`就是待执行的任务列表，而`fiber`调度的实现就是把`fiber`变成一个链表，按链表顺序执行，时间不够就把链表的下个节点保存等到下一帧执行
