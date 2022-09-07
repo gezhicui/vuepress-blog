@@ -307,3 +307,237 @@ requestIdleCallback(workFunction, 2000);
 ```
 
 我们可以看到，`taskList`就是待执行的任务列表，而`fiber`调度的实现就是把`fiber`变成一个链表，按链表顺序执行，时间不够就把链表的下个节点保存等到下一帧执行
+
+## schedule 过程发生了什么？
+
+了解完 fiber，接下来就来完成 fiber 的实现
+
+react 从根节点开始渲染和调度，分为两个阶段 : **diff+render 阶段，commit 阶段**
+
+### diff+render 阶段
+
+diff+render 阶段 对比新旧虚拟 DOM，进行增量更新或创建,花时间长，**可进行任务拆分，此阶段可暂停**
+
+render 阶段两个任务：
+
+- 1.根据虚拟 DOM 生成 fiber 树
+- 2.收集 effectlist
+
+render 阶段的成果是 `effectlist`， 即知道哪些节点更新哪些节点增加删除了
+
+### commit 阶段
+
+commit 阶段，根据 render+diff 阶段的成果（effectlist），进行 DOM 更新创建，**此阶段不能暂停**
+
+下面通过代码看看`schedule`过程，整个过程从`react-dom.js`文件中的`scheduleRoot`方法开始
+
+## schedule 过程代码实现
+
+### scheduleRoot
+
+在`scheduleRoot`中，把`rootFiber`保存在两个变量中，`workInProgressRoot`保存 RootFiber 应用的根，`nextUnitOfWork`保存供`requestIdleCallback`消费的下个任务单元
+
+```js
+let workInProgressRoot = null; //RootFiber应用的根
+let nextUnitOfWork = null; //下一个工作单元
+
+export function scheduleRoot(rootFiber) {
+  // rootFiber保存在workInProgressRoot和nextUnitOfWork中
+  workInProgressRoot = rootFiber;
+  nextUnitOfWork = rootFiber;
+}
+```
+
+在`workInProgressRoot`和`nextUnitOfWork`赋值之后，`requestIdleCallback`就开始工作了
+
+### workLoop
+
+```js
+/**
+ * 回调返回浏览器空闲时间，判断是否继续执行任务
+ * @param {*} deadline
+ */
+function workLoop(deadline) {
+  //react是否要让出控制权
+  let shouldYield = false;
+  // 如果当前有下个工作单元，且不需要让出控制权，则处理下个工作单元
+  while (nextUnitOfWork && !shouldYield) {
+    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+    // 如果当前帧剩余时间过短，则让出控制权
+    shouldYield = deadline.timeRemaining() < 1;
+  }
+  //如果全部工作单元处理结束，则进入commit
+  if (!nextUnitOfWork && workInProgressRoot) {
+    console.log('render阶段结束');
+    commitRoot();
+  }
+  //每一帧都要执行这个代码
+  window.requestIdleCallback(workLoop, { timeout: 500 });
+}
+
+//react询问浏览器是否空闲,这里有个优先级的概念 expirationTime
+window.requestIdleCallback(workLoop, { timeout: 500 });
+```
+
+在上面的代码中，浏览器会在每一帧的空闲时间执行`workLoop`,在`workLoop`方法中,只要存在下一个任务单元，且当前帧有空闲时间，则开始工作，所以在`workInProgressRoot`和`nextUnitOfWork`赋值之后，浏览器就会在每帧的空闲时间进行 fiber 的处理了，在代码中我们也可以发现，处理 fiber 的函数是`performUnitOfWork`,接下来看看这个处理函数做了什么
+
+### performUnitOfWork
+
+```js
+// 每一帧需要穿插执行的内容
+function performUnitOfWork(currentFiber) {
+  beginWork(currentFiber);
+  if (currentFiber.child) {
+    return currentFiber.child; //有孩子返回孩子
+  }
+  // 没孩子
+  while (currentFiber) {
+    //完成当前节点
+    completeUnitOfWork(currentFiber);
+    console.log(currentFiber);
+    //有弟弟返回弟弟
+    if (currentFiber.sibling) {
+      return currentFiber.sibling; //有弟弟返回弟弟
+    }
+    //没弟弟找到父亲继续执行
+    currentFiber = currentFiber.return;
+  }
+}
+```
+
+以上部分代码现在看起来有点懵，因为现在能知道的信息就是`child`属性是在虚拟 dom 上的，代表当前节点的子节点们，但是`sibling`和`return`是啥？别急，我们先从前几行开始看
+
+```js
+beginWork(currentFiber);
+if (currentFiber.child) {
+  return currentFiber.child; //有孩子返回孩子
+}
+```
+
+这部分应该目前还看得懂，`beginWork`方法处理当前虚拟 dom，处理完后如果当前虚拟 dom 有子节点，则让`nextUnitOfWork`等于子节点，把子节点变成下个任务单元供`workLoop`继续进行可中断调度
+
+那`beginWork`方法中做了什么？
+
+### beginWork
+
+```js
+function beginWork(currentFiber) {
+  if (currentFiber.tag === TAG_ROOT) {
+    //根节点
+    updateHostRoot(currentFiber);
+  } else if (currentFiber.tag === TAG_TEXT) {
+    //文本节点
+    updateHostText(currentFiber);
+  } else if (currentFiber.tag === TAG_HOST) {
+    //原生dom节点
+    updateHost(currentFiber);
+  }
+  // console.log('beginWork', currentFiber);
+}
+
+function updateHostRoot(currentFiber) {
+  //先处理自己 如果是一个原生节点，创建真实DOM 2.创建子fiber
+  let newChildren = currentFiber.props.children; //[element]
+  reconcileChildren(currentFiber, newChildren); //reconcile协调
+}
+
+function updateHostText(currentFiber) {
+  if (!currentFiber.stateNode) {
+    //如果此fiber没有创建DOM节点
+    currentFiber.stateNode = createDom(currentFiber);
+  }
+}
+
+function updateHost(currentFiber) {
+  if (!currentFiber.stateNode) {
+    //如果此fiber没有创建DOM节点
+    currentFiber.stateNode = createDom(currentFiber);
+  }
+  const newChildren = currentFiber.props.children;
+  reconcileChildren(currentFiber, newChildren);
+}
+
+function createDom(currentFiber) {
+  //文本节点
+  if (currentFiber.tag === TAG_TEXT) {
+    return document.createTextNode(currentFiber.props.text);
+  } else if (currentFiber.tag === TAG_HOST) {
+    // 其他原生dom节点 如div span
+    let stateNode = document.createElement(currentFiber.type);
+    //处理属性
+    setProps(stateNode, {}, currentFiber.props);
+    return stateNode;
+  }
+}
+```
+
+`beginWork`就是根据每个节点的 `tag` （tag 是在根据虚拟节点创建 fiber,即后面要讲的`reconcileChildren`方法中生成的）进行相应的处理,生成真实的 dom 节点，并把节点的属性通过`setProps`方法添加在真实节点上（`setProps`的具体实现看源码），然后把真实节点挂在当前节点的`stateNode`属性上
+
+由于根节点和原生 dom 节点会有子节点，所以要继续进行下一步`reconcileChildren`,传入当前节点的子节点，处理子节点，**生成子节点的 fiber**，而文本节点不会有子节点，所以不需要`reconcileChildren`处理子节点
+
+### reconcileChildren
+
+`reconcileChildren`是虚拟 dom 生成 fiber 的步骤，是 fiber 的核心之一，**作用是生成当前正在处理的节点的子节点的 fiber**，因为这个方法只用来处理子节点，这也是为什么最外层要挂一个 rootFiber 的原因。
+
+直接看代码
+
+```js
+function reconcileChildren(currentFiber, newChildren) {
+  let newChildIndex = 0; //新子节点的索引
+  let prevSibiling; //上一个新的子fiber
+  //遍历我们子虚拟DOM元素数组，为每一个虚拟DOM创建子Fiber
+  while (newChildIndex < newChildren.length) {
+    let newChild = newChildren[newChildIndex]; //取出虚拟DOM节点
+    let tag;
+    if (newChild.type == ELEMENT_TEXT) {
+      tag = TAG_TEXT;
+    } else if (typeof newChild.type === 'string') {
+      tag = TAG_HOST; //如果type是字符串，那么这是一个原生DOM节点div
+    }
+    // 处理当前fiber的子fuber
+    let newFiber = {
+      tag,
+      type: newChild.type,
+      props: newChild.props,
+      stateNode: null, //div还没有创建DOM元素
+      return: currentFiber, //父Fiber returnFiber
+      effectTag: PLACEMENT, //副作用标示，render会收集副作用 增加 删除 更新 第一次进来都是增加
+      nextEffect: null, //effect list也是一个单链表 顺序和完成顺序一样 节点可能会少 只放需要变动的fiber节点,其他的绕过
+    };
+    if (newFiber) {
+      if (newChildIndex == 0) {
+        //如果索引是0，就是大儿子
+        currentFiber.child = newFiber;
+      } else {
+        prevSibiling.sibling = newFiber; //大儿子指向弟弟
+      }
+      prevSibiling = newFiber;
+    }
+
+    newChildIndex++;
+  }
+}
+```
+
+`reconcileChildren`接收两个参数，第一个是当前正在处理的虚拟 dom，第二个是当前 dom 的所有子节点，该方法用于生成当前虚拟 dom 的所有子节点的 fiber，子 fiber 通过`sibling`连接，父子 fiber 通过`child`和`return`连接，这样父子组件就可以形成一个链表，方便用于中断调度
+
+具体内容看注释就行，关键的是创建完 fiber 后把子节点串起来的代码要细细解读下
+
+```js
+if (newFiber) {
+  if (newChildIndex == 0) {
+    //如果索引是0，就是大儿子
+    currentFiber.child = newFiber;
+  } else {
+    prevSibiling.sibling = newFiber; //大儿子指向弟弟
+  }
+  prevSibiling = newFiber;
+}
+```
+
+这部分代码的意思是，在循环创建当前节点的子节点 fiber 的过程中进行以下分支操作：
+
+- 如果是第一个子节点，则当前`fiber.child`等于第一个子节点
+- 如果不是第一个子节点，则把上一个子节点的`sibling`指向自己
+
+这样，父节点和所有子节点就通过`child`和`sibling`以及生成 fiber 过程中的`return`串起来了
