@@ -541,3 +541,81 @@ if (newFiber) {
 - 如果不是第一个子节点，则把上一个子节点的`sibling`指向自己
 
 这样，父节点和所有子节点就通过`child`和`sibling`以及生成 fiber 过程中的`return`串起来了
+
+### completeUnitOfWork 的时机
+
+在上面的代码中，我们解读了`performUnitOfWork`方法的`beginWork`部分，这部分主要是深度优先遍历了节点及各个节点的子节点，下面还有一部分内容：
+
+```js
+// 每一帧需要穿插执行的内容
+function performUnitOfWork(currentFiber) {
+  beginWork(currentFiber);
+  if (currentFiber.child) {
+    return currentFiber.child; //有孩子返回孩子
+  }
++  // 没孩子
++  while (currentFiber) {
++    //完成当前节点
++    completeUnitOfWork(currentFiber);
++    console.log(currentFiber);
++    //有弟弟返回弟弟
++    if (currentFiber.sibling) {
++      return currentFiber.sibling; //有弟弟返回弟弟
++    }
++    //没弟弟找到父亲继续执行
++    currentFiber = currentFiber.return;
+
+  }
+}
+```
+
+这部分的代码是什么意思呢？
+
+来看个例子，比方说有以下节点，
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20220908150949.png)
+
+在经过第一轮处理后节点间的关系如下
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20220908151239.png)
+
+这时候，当前处理节点的指针指向`C1`,它没有子节点，所以就会进入新增的这一部分代码。这段代码的执行逻辑是首先执行`completeUnitOfWork`来把该节点加入`effectList`的处理中,然后看看`C1`有没有兄弟节点，发现`C1`有兄弟节点`C2`,就把`nextUnitOfWork`指向`C2`,让`C2`成为下一个任务单元。
+
+当`C2`处理时，同样会进入`beginWork`,然后生成真实的 dom 节点挂在`C2`的`stateNode`属性上，但是`C2`并没有子节点，所以`reconcileChildren`实际上没有执行，然后进入`performUnitOfWork`的判断,发现`C2`节点既没有子节点，也没有兄弟节点，就拿到`C2.return`,即`B1`,`nextUnitOfWork`指向`B1`,让`B1`成为下一个任务单元继续执行，以此类推，最终结果如下
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20220908154923.png)
+
+而`completeUnitOfWork`的执行顺序如下
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20220908155319.png)
+
+### completeUnitOfWork 过程
+
+### 完整过程例子
+
+```html
+<div id="father">
+  <div id="son1">son1</div>
+  <div id="son2">son1</div>
+</div>
+```
+
+则整个流程的执行过程如下：
+
+- 1.通过`createElement`生成虚拟 dom
+- 2.执行`ReactDOM.render`方法，传入真实要挂载的 dom 节点
+- 3.`render`方法生成一个 root 节点，把 1 中的虚拟 dom 挂载在该节点下
+- 4.执行`scheduleRoot`,保存 root 节点为第一个任务单元开始调度
+- 5.浏览器通过`workLoop`在空闲时间执行任务单元，第一个任务单元为 root
+- 6.`workLoop`调用`performUnitOfWork`方法，该方法开始对当前节点进行处理
+- 7.`beginWork`方法判断当前节点为 root 节点，root 节点没有对应的真实 dom，直接进入`reconcileChildren`生成子节点 fiber
+- 8.`reconcileChildren`接收到当前节点(root)与子节点(id:fater),开始创建子节点(id:fater)的 fiber，并把当前子节点(id:fater)的 fiber 的 return 指向 root
+- 创建完子节点 fiber,因为 id:fater 节点是第一个子节点，所以把父节点(root)的 clild 指向子节点(id:fater)
+- 由于没有兄弟节点了，本轮`reconcileChildren`结束，此时`currentFiber`是 root,`currentFiber.child`是 id:fater 节点，
+- 把`currentFiber.child`，即 id:fater 节点作为下一个任务单元
+- 浏览器在空闲时执行任务单元，现在执行的当前节点是 id:fater
+- `beginWork`方法判断当前节点为原生 dom 节点，root 节点有对应的真实 dom 节点，通过`createDom`方法创建真实 dom,挂载在当前节点的`stateNode`属性上，然后进入`reconcileChildren`生成子节点 fiber
+- `reconcileChildren`接收到当前节点(id:fater)与子节点(id:son1;id:son2),开始循环创建子节点的 fiber，先创建(id:son1)的 fiber，并把当前子节点(id:son1)的 fiber 的 return 指向父节点(id:fater)
+- 创建完当前子节点(id:son1)的 fiber,因为 id:son1 节点是第一个子节点，所以把父节点(fater)的 clild 指向子节点(id:son1)
+- 开始创建第二个子节点(id:son2)的 fiber，并把当前子节点(id:son2)的 fiber 的 return 指向父节点(id:fater)，
+- 创建完当前子节点(id:son2)的 fiber,因为 id:son2 节点不是第一个子节点，所以把上一个子节点(id:son1)的 sibling 指向自己
