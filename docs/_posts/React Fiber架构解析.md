@@ -589,7 +589,9 @@ function performUnitOfWork(currentFiber) {
 
 ![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20220908155319.png)
 
-### completeUnitOfWork 过程
+### completeUnitOfWork
+
+`completeUnitOfWork`方法实际上就是生成`effectlist`的方法，`effectlist`实际上就是在 fiber 上新增了`firstEffect`、`nextEffect`、`lastEffect`属性
 
 ### 完整过程例子
 
