@@ -660,3 +660,56 @@ function performUnitOfWork(currentFiber) {
 - 回到`performUnitOfWork`,当前节点(text:son2)没有子节点，所以`complete`当前节点(即执行`completeUnitOfWork`)，当前节点也没有兄弟节点，所以把父节点(id:son2)`complete`
 - 父节点(id:son2)`complete`后，发现节点(id:son2)没有下一个兄弟节点了，所以把(id:father)`complete`
 - 所有节点执行完毕,生成`effect list`
+
+### commit
+
+当所有节点都处理完，生成`effect list`后，就要进入`commit`阶段了，生成`effect list`的阶段可以打断，但是现在要进行的`commit`阶段是不能被打断的
+
+`commit`阶段做的主要事情是从下到上拿到各个 fiber 的 `stateNode`,它是当前 fiber 的真实节点信息，把节点挂载在父节点的真实节点上，来看代码
+
+```js
+// 没有下一个任务单元,fiber处理结束，effectlist生成完成
+if (!nextUnitOfWork && workInProgressRoot) {
+  console.log('render阶段结束');
+  commitRoot();
+}
+
+function commitRoot() {
+  //拿到effect list 的firstEffect，从first effect开始挂载
+  let currentFiber = workInProgressRoot.firstEffect;
+  while (currentFiber) {
+    commitWork(currentFiber);
+    currentFiber = currentFiber.nextEffect;
+  }
+  workInProgressRoot = null;
+}
+function commitWork(currentFiber) {
+  if (!currentFiber) return;
+  let returnFiber = currentFiber.return;
+  let returnDOM = returnFiber.stateNode;
+  //console.log(currentFiber)
+  if (currentFiber.effectTag === PLACEMENT) {
+    returnDOM.appendChild(currentFiber.stateNode);
+  }
+  currentFiber.effectTag = null;
+}
+```
+
+代码中的节点从下到上根据`effectlist`的顺序逐渐往上挂载，到最后会挂载到 root 的 stateNode 上，而 root 的 stateNode 是 render 函数传进来的根节点:
+
+```js
+//#root 为root的stateNode
+ReactDOM.render(element, document.querySelector('#root'));
+```
+
+已经存在在页面上了，所以所有真实节点就被全部挂载到页面上了
+
+至此，react 的完整渲染过程就讲解完了，我对前端 mvvm 的理解又加深了一步，继续加油吧
+
+## 参考文章
+
+[RaeZhang：React Fiber 详解](https://blog.csdn.net/RaeZhang/article/details/115321540)
+
+[我是真的不会前端：随笔：关于 Fiber 架构的一点点理解](https://blog.csdn.net/qq_23539691/article/details/120192548)
+
+[崩崩老猫：使用 requestIdleCallback](https://zhuanlan.zhihu.com/p/331481009)
