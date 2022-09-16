@@ -695,7 +695,7 @@ function commitWork(currentFiber) {
 }
 ```
 
-代码中的节点从下到上根据`effectlist`的顺序逐渐往上挂载，到最后会挂载到 root 的 stateNode 上，而 root 的 stateNode 是 render 函数传进来的根节点:
+代码中的节点从下到上根据`effectlist`的顺序逐渐往上挂载，到最后会挂载到 root 的 stateNode 上，而 root 的 stateNode 是 render 函数传进来的根节点,如下：
 
 ```js
 //#root 为root的stateNode
