@@ -54,6 +54,14 @@ O(n^3)和 O(n)差了两个指数级，尤大说过框架设计就是不断地舍
 - 2.**两个不同类型的元素会产生出不同的树**。如果元素由 div 变为 p，算法会销毁 div 及其子孙节点，并新建 p 及其子孙节点。
 - 3.开发者可以通过 **key** 来暗示哪些子元素在不同的渲染下能保持稳定。
 
+## key 的作用
+
+当同一层级的节点添加了 key 属性后，当位置发生变化时。 diff 进行新旧节点比较，如果发现有相同的 key 就会进行移动操作，而不会删除再创建，大大提高了性能
+
+**为什么不能使用 index 作为 key？**
+
+index 作为 key ，如果我们删除了一个节点，那么数组的后一项可能会前移，这个时候移动的节点和删除的节点就是相同的 key，如果 key 相同，就会视为相同的组件，但这两个组件是不同的，这样就会出现很麻烦的事情，例如:序号和文密不对应等问题，所以一定要保证 key 的唯一 性
+
 ## React diff
 
 下面来看看 react 中的 diff 是怎么做的
@@ -76,7 +84,7 @@ O(n^3)和 O(n)差了两个指数级，尤大说过框架设计就是不断地舍
 
 React 对于组件的策略有两种方式，分别是相同类型的组件和不同类型的组件
 
-- 对同种类型组件对比，按照**层级比较**继续比较**虚拟 DOM 树**即可
+- 对同种类型组件对比，按照**层级比较**继续比较**虚拟 DOM 树**即可，用户可以通过 `shouldComponentUpdate()` 来判断组件是否需要判断计算
 - 对于不同组件来说，React 会直接判定该组件为**dirty component（脏组件）**，无论结构是否相似，**只要判断为脏组件就会直接替换整个组件的所有节点**
 
 举个栗子：
@@ -118,7 +126,7 @@ React 对于组件的策略有两种方式，分别是相同类型的组件和�
 - `index`：当前节点在老集合中的下标。
 - `lastIndex`：在新集合访问过的节点中，其在老集合的最大下标值。
 
-> 注意：`lastIndex` 一开始默认值是`0`，它会与旧元素位置`index`进行比较，比较完后，会改变自己的值的（取 `index` 和 `lastIndex` 的较大数）。
+> 注意：`lastIndex` 一开始默认值是`0`，它会与旧元素位置`index`进行比较，比较完后，会改变自己的值的（取 `index` 和 `lastIndex` 的较大数）。`lastIndex` 一直在更新，表示访问过的节点在老集合中最右的位置（即最大的位置），如果新集合中当前访问的节点比 `lastIndex` 大，说明当前访问节点在老集合中就比上一个节点位置靠后，则该节点不会影响其他节点的位置，即它位置就算不移动的话，这个列表依然是有序的，因此不用添加到差异队列中，即不执行移动操作，只有当访问的节点比 `lastIndex` 小时，才需要进行移动操作。
 
 **操作一栏中只比较 index 和 lastIndex：**
 
@@ -179,3 +187,64 @@ React 对于组件的策略有两种方式，分别是相同类型的组件和�
 若新集合的节点更新为：D、A、B、C，与老集合对比只有 D 节点移动，而 A、B、C 仍然保持原有的顺序，理论上 diff 应该只需对 D 执行移动操作，然而由于 D 在老集合的位置是最大的，D 不移动，但它的 index 是最大的，导致更新 lastIndex=3，从而使得其他元素 A,B,C 的 index<lastIndex，导致 A,B,C 都要去移动。
 
 > 建议：在开发过程中，尽量减少类似将最后一个节点移动到列表首部的操作，当节点数量过大或更新操作过于频繁时，在一定程度上会影响 React 的渲染性能。
+
+## Vue2 双端 diff
+
+Vue2 的`diff`算法核心在`updateChildren`方法。和 React 一样，只在同级`diff`。下面来看一个实例：
+
+现在有节点如下
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20221013215249.png)
+
+`oldVnode`是已经在页面上的旧虚拟节点，`newVnode`是 js 处理完的新虚拟节点，按如下顺序进行比较
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20221013215738.png)
+
+上图中比对的原则是：
+
+- 1、按标注顺序依次比较，当有两个节点比较成功后退出当前比较
+- 2、渲染结果以 newVnode 为准
+- 3、每次比较成功后 start 点和 end 点**向中间靠拢**
+- 4、当新旧节点中有一个 start 点跑到 end 点右侧时终止比较，如果都匹配不到，则旧虚拟 DOM key 值去比对新虚拟 DOM 的 key 值，如果 key 相同则复用，并移动到新虚拟 DOM 的位置
+
+下面来看看这个案例比对的流程：
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20221013221144.png)
+
+首先`oldStart`和`newStart`比对，发现比对不上，接着就用`oldStart`和`newEnd`比对，比对成功了
+
+我们发现，在新虚拟节点中，对应的元素在第四个位置，所以真实 dom 中，对应的元素要移动到第四个位置去
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20221016200708.png)
+
+因为上次`oldStart`和`newEnd`比对成功了，所以`oldStart`指针向右侧移动，`newEnd`指针向左侧移动，接着开始第二轮比对
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20221016201054.png)
+
+发现比对成功了，在新虚拟节点中，对应的元素在第一个位置，所以真实 dom 中元素也要移动到第一个位置去
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20221016201354.png)
+
+因为上一步`oldStart`和`newStart`比对成功了，所以他们分别向右侧移动，并开始比对
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20221016201627.png)
+
+发现比对成功，新虚拟节点中对应的元素在第二个位置，所以真实 dom 中对应的元素也要移动到第二个位置
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20221016201957.png)
+
+`oldStart`和`newStart`的指针继续向右侧移动，这样，`oldStart`的位置就超过了`oldEnd`的位置，整个比对过程结束，目前的 dom 结构如下
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20221016202201.png)
+
+我们看到新虚拟节点中有多余的元素，现在直接把多余的元素添加到真实 dom 中就可以了
+
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/20221016202443.png)
+
+如果比对结束后，新虚拟节点中的元素比较少的话，我们就需要删除真实 dom 中多余的元素
+
+可以看下这个视频来加深理解 [Vue.js VirtualDOM diff 算法](https://www.bilibili.com/video/BV1Ph41117hq/?spm_id_from=333.999.0.0&vd_source=55d698b0f521621924632d62c7904e3b)
+
+## Vue3 快速 diff
+
+这部分网上讲的都不是很好，最近入手了一本《Vuejs 设计与实现》，等看完再来补坑
