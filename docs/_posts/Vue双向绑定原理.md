@@ -26,7 +26,9 @@ author:
 - 在`Observer`对象中，我们通过`Object.defineProperty`来劫持所有的 data 属性。其实就是给每一个属性放进其对应的`Dep`对象。当数据发生改变时，调用`Dep`中的`notify`方法通知`watcher`执行`update()`方法做出改变
 - 在`Dep`对象中，有一个`subs`数组，数组中存放着所有监听着这个数据的`data`对象(watcher)
 
-- 在`Complite`对象中，我们通过`{{数据}}`来解析 el 模板中的指令。在每个使用的地方创建一个`watcher`对象,并把这个对象放到`Dep`中
+- 在`Complite`对象中，我们通过'`{{数据}}'`来解析 el 模板中的指令。**在每个使用的地方创建一个`watcher`对象**,并把这个对象放到`Dep`中
+
+<!-- more -->
 
 ## 前提概念
 
@@ -95,65 +97,65 @@ console.log(user.type);
 
 ```js
 //我们现在把user对象变成可侦测的，首先定义一个Observer类
-class Observer{
-    constructor(value){
-        this.value = value;
-        if(Array.isArray(value)){
-            //value是数组的时候，用数组的侦听方式
-        }else if(typeof value === Object){
-            //当value是对象的时候调用walk实现循环侦测属性
-            this.walk(value)
-        }
+class Observer {
+  constructor(value) {
+    this.value = value;
+    if (Array.isArray(value)) {
+      //value是数组的时候，用数组的侦听方式
+    } else if (typeof value === Object) {
+      //当value是对象的时候调用walk实现循环侦测属性
+      this.walk(value);
     }
-    walk(obj){
-        //获取对象的所有属性列表
-        const keys = Object.keys(obj)
-        for(let i = 0;i<keys.length;i++){
-            dedefineReactive(obj,key[i])
-        }
+  }
+  walk(obj) {
+    //获取对象的所有属性列表
+    const keys = Object.keys(obj);
+    for (let i = 0; i < keys.length; i++) {
+      defineReactive(obj, key[i]);
     }
+  }
 }
 
-function defineReactive(obj,key,value){//对象，属性，改变的值(上个例子中的content)
-    //当只传入2个值的时候，可以通过obj[key]直接获取到第三个参数value值
-    if(arguments.length==2){
-        value = obj[key]
-    }
-    //如果属性的值value也是对象，那么也需要将其变为可侦测
-    if(typeof value==='object'){
-        new Observer(val)
-    }
+function defineReactive(obj, key, value) {
+  //对象，属性，改变的值(上个例子中的content)
+  //当只传入2个值的时候，可以通过obj[key]直接获取到第三个参数value值
+  if (arguments.length == 2) {
+    value = obj[key];
+  }
+  //如果属性的值value也是对象，那么也需要将其变为可侦测
+  if (typeof value === 'object') {
+    new Observer(val);
+  }
 
-    Object.defineProperty(obj, key,{
-        enumerable:true,//定义此属性是否出现在for in循环,以 及object.keys()的便利中
-        configurable:true,//定义此属性可以配置和删除
+  Object.defineProperty(obj, key, {
+    enumerable: true, //定义此属性是否出现在for in循环,以 及object.keys()的便利中
+    configurable: true, //定义此属性可以配置和删除
 
-        //取数据的描述符
-        get(){
-            console.log(`现在在取${key}属性的数据`)
-            return value
-        }
-        set(newValue){
-            if(value===newValue){
-                //值没变化，不做处理
-                return
-            }
-            console.log(`现在在存${key}属性的数据,存入的值是：`+newValue)
-            value = newValue
-        }
-
-    })
+    //取数据的描述符
+    get() {
+      console.log(`现在在取${key}属性的数据`);
+      return value;
+    },
+    set(newValue) {
+      if (value === newValue) {
+        //值没变化，不做处理
+        return;
+      }
+      console.log(`现在在存${key}属性的数据,存入的值是：` + newValue);
+      value = newValue;
+    },
+  });
 }
 
 let user = {
-    username:'yang',
-    type:'帅'
-    friend:{
-        username:'隔壁老王'
-    }
-}
+  username: 'yang',
+  type: '帅',
+  friend: {
+    username: '隔壁老王',
+  },
+};
 
-let user1 = new Observer(user)
+let user1 = new Observer(user);
 ```
 
 ## 订阅者 Dep
@@ -176,7 +178,7 @@ class Dep {
   }
   /* 通知所有Watcher对象更新视图 */
   notify() {
-    this.subs.forEach((watcher) => {
+    this.subs.forEach(watcher => {
       watcher.update();
     });
   }
