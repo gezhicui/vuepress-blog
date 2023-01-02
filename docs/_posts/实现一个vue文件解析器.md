@@ -151,7 +151,7 @@ for (let key in vm.$data) {
 
 ### 初始化数据池
 
-在上面的 **template 解析**中，我们已经拿到了`template`转换过后的节点，但是有个问题，节点的内容没有经过任何处理，如`{{count + 1}}`会原封不动的展示在浏览器中，我们希望的是最终展示的是 count 这个变量 +1 的结果，所以我们需要对双括号语法进行解析
+在上面的 **template 解析**中，我们已经拿到了`template`转换过后的节点，但是有个问题，节点的内容没有经过任何处理，如`'{{count + 1}}'`会原封不动的展示在浏览器中，我们希望的是最终展示的是 count 这个变量 +1 的结果，所以我们需要对双括号语法进行解析
 
 我们先定义一个正则表达式，匹配`{{}}`中的内容，以及定义一个节点数据池
 
@@ -166,7 +166,7 @@ const regExpr = /\{\{(.+?)\}\}/;
 
 ```js
 const allNodes = $node.querySelectorAll('*');
-allNodes.forEach((node) => {
+allNodes.forEach(node => {
   // 这里获取到的textContent是原原始的没经过任何处理的节点内容，如{{count + 1}}
   const vExpression = node.textContent;
   /* exprMatched：{
@@ -225,7 +225,7 @@ const regString = /\'(.+?)\'/;
 ```js
 const allNodes = $node.querySelectorAll('*');
 
-allNodes.forEach((node) => {
+allNodes.forEach(node => {
   const vClickVal = node.getAttribute(`@click`);
   if (vClickVal) {
     /* 
@@ -259,7 +259,7 @@ function checkFunctionHasArgs(str) {
     const argArr = matched[2].split(',');
     const args = checkIsString(matched[2])
       ? argArr // ['1']
-      : argArr.map((item) => Number(item));
+      : argArr.map(item => Number(item));
 
     return {
       methodName: matched[1],

@@ -16,6 +16,7 @@ author:
 ## 参考文章
 
 [Vue 响应式原理学习总结](https://juejin.cn/post/6932659815424458760).
+
 [学习 Vue 源码系列](https://gitee.com/ykang2020/vue_learn).
 
 先放一张图，这是响应原理的实现思路
@@ -23,7 +24,9 @@ author:
 ![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/响应式原理.png)
 
 - 在 new 出来的 Vue 对象中，我们定义`data`来存放我们的数据
-- 在`Observer`对象中，我们通过`Object.defineProperty`来劫持所有的 data 属性。其实就是给每一个属性放进其对应的`Dep`对象。当数据发生改变时，调用`Dep`中的`notify`方法通知`watcher`执行`update()`方法做出改变
+
+- 在`Observer`对象中，我们通过`Object.defineProperty`来劫持所有的 `data` 属性。其实就是给每一个属性赋予其对应的`Dep`对象。当数据发生改变时，调用`Dep`中的`notify`方法通知`watcher`执行`update()`方法做出改变
+
 - 在`Dep`对象中，有一个`subs`数组，数组中存放着所有监听着这个数据的`data`对象(watcher)
 
 - 在`Complite`对象中，我们通过'`{{数据}}'`来解析 el 模板中的指令。**在每个使用的地方创建一个`watcher`对象**,并把这个对象放到`Dep`中
@@ -254,8 +257,8 @@ function defineReactive(obj,key,value){
     //取数据的描述符
     get(){
       //收集依赖，Dep. target就是观察者对象
-    Dep.target && dep.addsub(Dep.target )
-        return value
+      Dep.target && dep.addsub(Dep.target)
+      return value
     }
     set(newValue){
       if(value===newValue) return
@@ -267,6 +270,7 @@ function defineReactive(obj,key,value){
   })
 }
 
+// 我们通过'{{数据}}'来解析 el 模板中的指令。在每个使用的地方创建一个watcher对象
 let w1 = new Watcher(obj, 'a', (val, oldVal) => {
   console.log(`obj.a 从 ${oldVal}(oldVal) 变成了 ${val}(newVal)`)
 })
