@@ -22,11 +22,11 @@ const o2 = new Base();
 
 在讲述两者区别之前，我们需要知道：
 
-- 构造函数 Foo 的原型属性 Foo.prototype 指向了原型对象。
-- 原型对象保存着实例共享的方法，有一个指针 constructor 指回构造函数。
-- js 中只有函数有 prototype 属性，所有的对象只有*proto*隐式属性。
+- 构造函数 `Foo` 的原型属性 `Foo.prototype` 指向了原型对象。
+- 原型对象保存着实例共享的方法，有一个指针 `constructor` 指回构造函数。
+- js 中只有函数有 `prototype` 属性，所有的对象只有`__proto__`隐式属性。
 
-好了，首先，我们来看看 **var o1 = new Base()的时候 new 做了什么**。
+好了，首先，我们来看看 **var o1 = new Base()**的时候 new 做了什么。
 
 ```js
 //创建一个空对象o1
@@ -37,7 +37,7 @@ o1._proto_ = Base.prototype;
 Base.call(o1);
 ```
 
-new 做的操作就是先创建一个新的对象 o1，这时 o1.*proto*指向 Object.prototype。然后更改 o1.*proto*指向 Base.prototype。最后用 call 强行转换作用环境，将构造函数的 this 指向 o1，也就是 o1 拥有了构造函数 Base 定义的全部属性。
+new 做的操作就是先创建一个新的对象 o1，这时 o1 的`__proto__`指向 `Object.prototype`。然后更改 o1 的`__proto__`指向 `Base.prototype`。最后用 call 强行转换作用环境，将构造函数的 this 指向 o1，也就是 o1 拥有了构造函数 Base 定义的全部属性。
 
 **再看看 Object.create 的实现方式**
 
@@ -49,9 +49,9 @@ Object.create = function (Base) {
 };
 ```
 
-首先创建一个空函数 F，函数的 prototype 指向 Base 函数。new 一个函数的实例，即让该实例的*proto*指向函数 F 的 prototype，也就是 Base 函数，最后将该实例返回。
+首先创建一个空函数 F，函数的 `prototype` 指向 `Base` 函数。new 一个函数的实例，即让该实例的`__proto__`指向函数 `F` 的 `prototype`，也就是 `Base` 函数，最后将该实例返回。
 
-即通过 Object.create 创建的对象 o2，实际上完成了 o2._proto_ = Base 的操作(重点在这，如果是 new 创建的对象, o2._proto_ = Base.prototype)。注意传入的参数 Base2 是一个对象。如果传入的是一个构造函数的话，该实例是无法继承的。
+即通过 `Object.create` 创建的对象 `o2`，实际上完成了 `o2._proto_ = Base` 的操作(重点在这，如果是 new 创建的对象, o2._proto_ = Base.prototype)。注意传入的参数 Base2 是一个对象。如果传入的是一个构造函数的话，该实例是无法继承的。
 
 来看个简单例子
 

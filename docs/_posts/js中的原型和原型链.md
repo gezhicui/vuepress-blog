@@ -21,12 +21,13 @@ author:
 
 ## 构造函数原型 prototype
 
-&emsp;&emsp;构造函数通过原型分配的函数是所有对象所**共享的**。
-&emsp;&emsp;JavaScript 规定，每一个构造函数都有一个`prototype`属性，指向另一个对象。注意这个`prototype`就是一个对象，这个对象的所有属性和方法，都会被构造函数所拥有。称为**_原型对象_**
+构造函数通过原型分配的函数是所有对象所**共享的**。
 
-&emsp;&emsp;我们可以把那些不变的方法，直接定义在 prototype 对象上，这样所有对象的实例就可以共享这些方法。这就是原型的作用
+JavaScript 规定，每一个构造函数都有一个`prototype`属性，指向另一个对象。注意这个`prototype`就是一个对象，这个对象的所有属性和方法，都会被构造函数所拥有。称为**原型对象**
 
-&emsp;&emsp;举个栗子
+我们可以把那些不变的方法，直接定义在 `prototype` 对象上，这样所有对象的实例就可以共享这些方法。这就是原型的作用
+
+举个栗子
 
 ```javascript
 //解决构造函数的问题
@@ -47,27 +48,28 @@ zxy.sing();
 
 ---
 
-## 对象原型 **proto**
+## 对象原型 **`__proto__`**
 
-&emsp;&emsp;对象都会有一个属性 **proto** 指向构造数的 prototype 原型对象，之 以我们对可以使用构造函数 prototype 原型对象的性和方法，就是因为对象 **proto**原型的存在。
+对象都会有一个属性 `__proto__` 指向构造数的 `prototype` 原型对象，之 以我们对可以使用构造函数 `prototype` 原型对象的性和方法，就是因为对象 `__proto__`原型的存在。
 
 ```javascript
 console.log(ldh.__proto__ === star.prototype);
 //输出结果为true
 //方法的查找规则：首先先看1dh对象身上是否有sing方法，如果有就执行这个对象上的sing
-//如果么有sing这个方法，因为有_proto的存在，就去构造函数原型对象prototype身上去查找sing这个方法I
+//如果么有sing这个方法，因为有_proto_的存在，就去构造函数原型对象prototype身上去查找sing这个方法I
 ```
 
-&emsp;&emsp;proto 对象原型的意义就在于为对象的查找机制提供一个方向，或者说一条路线，但是它是一个非标准属性，因此实际开发中，不可以使用这个属性，它只是内部指向原型对象 prototype
+`__proto__` 对象原型的意义就在于为对象的查找机制提供一个方向，或者说一条路线，但是它是一个非标准属性，因此实际开发中，不可以使用这个属性，它只是内部指向原型对象 `prototype`
 ![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/proto.png)
 
 ---
 
 ## constructor 构造函数
 
-&emsp;&emsp;对象原型（ _proto_ ）和构造函数（prototype）原型对象里面都有一个属性 constructor 属性，constructor 我们称为构造函数，因为它指回构造函数本身。
+对象原型（`__proto__` ）和构造函数（`prototype`）原型对象里面都有一个属性 `constructor` 属性，`constructor` 我们称为构造函数，因为它指回构造函数本身。
 
 ```javascript
+console.log(ldh.__proto__ === star.prototype); //true
 console.log(star.prototype.constructor);
 console.log(ldh.__proto__.constructor);
 //输出的都是star这个构造函数
@@ -87,10 +89,18 @@ star.prototype = {
 ```
 
 **这个时候，protptype 被完全覆盖掉了**
-我们就要添加一个语句让 prototype 重新指回构造函数
+我们就要添加一个语句让 `prototype` 重新指回构造函数
 
-```javascript
-constructor: star;
+```diff
+star.prototype = {
+  sing: function () {
+    console.log('我会唱歌');
+  },
+  movie: function () {
+    console.log('我会演电影');
+  },
++ constructor: star;
+};
 //如果我们修改了原来的原型对象，给原型对象赋值的是一个对象，则必须手动的利用constructor指回原来的构造函数
 ```
 
@@ -104,14 +114,14 @@ constructor: star;
 
 ## 原型链
 
-&emsp;&emsp;**只要是对象就有\_proto 原型，指向原型对象**
+**只要是对象就有`__proto__` 原型，指向原型对象**
 
 一张图看懂原型链：
 ![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/原型链.png)
 
-- 我们 star 原型对象里面的*proto*原型指向的是 Object.prototype
+- 我们 star 原型对象里面的`__proto__`原型指向的是 `Object.prototype`
 
-- 我们 object.prototype 原型对象里面的*proto*原型指向为 null
+- 我们`Object.prototype` 原型对象里面的`__proto__`原型指向为 null
 
 ---
 
