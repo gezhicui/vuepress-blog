@@ -39,11 +39,7 @@ const title = <h1 className="title">Hello, world!</h1>;
 本质上，**jsx 是语法糖**，上面这段代码会被`babel`转换成如下代码：
 
 ```js
-const title = React.createElement(
-  'h1',
-  { className: 'title' },
-  'Hello, world!'
-);
+const title = React.createElement('h1', { className: 'title' }, 'Hello, world!');
 ```
 
 本质上来说 JSX 是`React.createElement(component, props, ...children)`方法的语法糖。
@@ -105,7 +101,7 @@ function createElement(type, config, ...children) {
     type,
     props: {
       ...config, //属性扩展 id、key、style
-      children: children.map((child) => {
+      children: children.map(child => {
         //兼容处理，如果是普通元素返回自己，如果是文本类型，返回文本元素对象
         //比方说B1文本那么children就是["B1文本"]，改为了
         //{type:Symbol(ELEMENT_TEXT),props:{text:"B1文本",children:[]}}也不可能有children了
@@ -202,7 +198,7 @@ ReactDOM.render(element1, document.querySelector('#root'));
 - 调用函数组件、或 class 组件的 render 方法，将返回的**JSX 转化为虚拟 DOM**
 - 将虚拟 DOM 和上次更新时的虚拟 DOM **对比**
 - 通过对比**找出本次更新中变化的虚拟 DOM**
-- 通知 `Renderer` 将变化的虚拟 DOM 渲染到页面上
+- 通知 `Render` 将变化的虚拟 DOM 渲染到页面上
 
 对于 React 的更新来说，递归遍历应用的所有节点由于递归执行，计算出差异，然后再更新 UI。**递归是不能被打断的**，所以更新一旦开始，中途就无法中断。当层级很深时，递归更新时间超过了 16ms(小于 60 帧)，用户交互就会卡顿。
 
@@ -259,7 +255,7 @@ const newFiber = {
   stateNode: null, //如果是原生的节点类型，是虚拟dom对应的真实节点，如果是class/func组件，则是组件实例
   updateQueue: null, // 数据更新队列
   return: null, //父fiber
-  alternate: null, //捞fiber，用于新旧fiber对比更新
+  alternate: null, //老fiber，用于新旧fiber对比更新
   effectTag: null, //副作用标示，render会收集副作用 增加 删除 更新
   nextEffect: null, //fiber节点组合成effectlist链表，指向链表当前节点的下一个节点
 };
@@ -289,10 +285,7 @@ requestIdleCallback(workFunction, { timeout: 2000 });
  * didTimeout 指定的时间是否过期。
  */
 function workFunction(deadline) {
-  while (
-    (deadline.timeRemaining() > 0 || deadline.didTimeout) &&
-    taskList.length > 0
-  ) {
+  while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && taskList.length > 0) {
     //如果当前帧还有剩余时间，或超时了但是任务还没执行完，就执行任务
     doWork();
   }
