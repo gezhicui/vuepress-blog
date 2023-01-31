@@ -52,48 +52,47 @@ permalink: /pages/8c0e5b/
 
 ## Vue-Router 执行顺序
 
-### router.js
+### 初始化执行
 
-1、导入 vue-router
+1、`main.js`作为项目的入口文件，导入了`src/router.js`
 
-2、Vue.use 执行 install 方法，
+2、在`src/router.js`中，做了三件事:
 
-- 注册全局组件
-- 在每 Vue 个实例 beforeCreate 混入内容，等待 new Vue
+- 导入 `vue-router`，用来创建他的实例
 
-3、new VueRouter
+- 获取到`Vue`的构造函数，通过`Vue.use` 执行 `install` 方法，事先为组件实例`mixin`了一个在`beforeCreate`生命周期中进行处理的方法
 
-- 扁平化处理用户传入的 options,提供 match 方法对扁平化路径进行查找
+- 生成路由实例，扁平化处理用户传入的路由配置项 , 提供 `match` 方法对扁平化路径进行查找，同时，根据 `mode` 去创建路由对象，初始化 `current(当前路由)`,初始化核心方法
 
-- 根据 mode 去 new History 对象，初始化 current(当前路由),初始化核心方法
+3、`main.js`中获取到路由实例，把路由实例传入 `Vue` 的构造函数中处理
 
-### main.js
+4、`new Vue` 时创建组件实例， `Vue` 为每个组件实例递归挂载了 `beforeCreate` 生命周期，但是我们之前`mixin`了一个`beforeCreate`,所以每个组件都会执行我们在该生命周期中`mixin`的处理函数
 
-1、 main.js 中 new Vue
+5、在`mixin`的处理函数中，在 `Vue` 递归创建实例时，会判断当前的组件实例，找到根实例，向根实例添加`_routerRoot`(Vue 根实例)，`_router`(实例化的路由对象)
 
-2、 vue 递归挂载了 beforeCreate 生命周期，触发 install 中混入的东西，并拿到 Vue 实例
+6、执行路由实例中的 `init` 方法
 
-3、 在 Vue 递归创建实例时，找到根实例，向根实例添加\_routerRoot(Vue 根实例)，\_router(实例化的路由对象)
+- `init` 接收 `Vue` 根实例作为参数
 
-4、 执行路由实例中的 init 方法
+- 获取到 `new VueRouter` 时创建的路由实例对象
 
-- init 接收 Vue 根实例作为参数
-
-- 获取到 new VueRouter 时创建的 History 实例对象
-
-- 执行 History 实例对象的核心方法 **transitionTo**,
+- 执行路由实例对象的核心方法 `**transitionTo**`,
 
 ```
-transitionTo中执行内容：
+`transitionTo`中执行内容：
+
 1、执行match方法搜索路由匹配项
+
 2、改变current为匹配的路由项
-3、回调listen方法，拿到Vue 根实例，修改Vue根实例中的_route为current
+
+3、回调listen方法，该方法内容是拿到Vue 根实例，修改Vue根实例中的_route为current，触发响应式
+
 4、监听路由改变，路由改变就重新调用transitionTo方法
 ```
 
-- 向 listen 方法传入 Vue 根实例,给 transitionTo 作为回调
+7、 向 `listen` 方法传入 `Vue` 根实例,给 `transitionTo` 作为回调
 
-5、把\_route 设置成响应式对象，值为 current，我们之前做了监听路由改变的操作，当路由改变时重新调用 transitionTo 方法,修改 current，触发响应式操作。
+8、把`_route` 设置成响应式对象，值为 `current`，我们之前做了监听路由改变的操作，当路由改变时重新调用 `transitionTo` 方法,修改 `current`，触发响应式操作。
 
 ### 各组件中
 
@@ -122,6 +121,10 @@ current={
 设当前路径是/about/a, 第一次肯定是渲染 app 的 routerview, app 没有父亲，所以 depth = 0,渲染 matched[0]中的组件,打个标记 data.routerView = true。
 
 然后渲染 about 里面的 routerview，就让他往上找父亲，每向上一层,depth 就+1，直到找到被打标记的 router-view，depth 的值即为组件深度。就可以用 matched[depth]渲染当前 router-view 内容
+
+#### router-link 实现原理
+
+采用函数式组件实现,没啥好说的，非常简单，看源码就行
 
 大功告成！！！！这里我们就实现了 Vue-router 的核心逻辑
 
