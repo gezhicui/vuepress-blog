@@ -96,31 +96,37 @@ permalink: /pages/8c0e5b/
 
 ### 各组件中
 
-由于 router-view 的实现用到了 current，触发响应式操作时，会刷新组件。
+由于 `router-view` 内部用到了 `current`这个变量，变量变化时会触发响应式，会刷新组件。
 
 #### router-view 实现原理
 
 采用函数式组件实现
 
-- render 函数中传入组件的上下文 context,context 可以获取到当前 router-view 的父组件(即 router-view 所在的组件)
+- `render` 函数中传入组件的上下文 `context`, 它可以获取到当前 `router-view` 的父组件(即 `router-view` 所在的组件),上下文对象打印出来如下：
 
-- 获取 current ,current 中的内容如下：
+![](https://yangblogimg.oss-cn-hangzhou.aliyuncs.com/blogImg/QQ%E5%9B%BE%E7%89%8720230207160226.png)
+
+- 获取 `matched ` ,`matched ` 中的内容如下：
 
 ```
 例如路径是/about/a
-current={
+matched={
   path:/about/a,
   matched:[/about组件记录,/about/a组件记录]
 }
 ```
 
-- 设置 depth = 0
+- 设置 `depth = 0`
 
 - 接下来就是递归操作，如下
 
-设当前路径是/about/a, 第一次肯定是渲染 app 的 routerview, app 没有父亲，所以 depth = 0,渲染 matched[0]中的组件,打个标记 data.routerView = true。
+1、设当前路径是`/about/a` ，则有两个组件需要渲染，一个是`/about` 的组件，一个是`/a` 的组件,[/about 组件，/a 组件]
 
-然后渲染 about 里面的 routerview，就让他往上找父亲，每向上一层,depth 就+1，直到找到被打标记的 router-view，depth 的值即为组件深度。就可以用 matched[depth]渲染当前 router-view 内容
+2、首先渲染`/about`，vue 向上找，直到找到根元素，发现这是第一个 `router-view`，就渲染 `matched[0]`的组件
+
+3、其次渲染`/a`,vue 向上找，直到找到根元素，发现`/about` 中有一个 `router-view`，`depth++`,就渲染 `matched[1]`的组件
+
+4、 以此类推，`depth` 的值即为组件深度
 
 #### router-link 实现原理
 
